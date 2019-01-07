@@ -1,6 +1,6 @@
 # torrent-clean
 
-CLI utility that parses specified torrent file and removes files that are missed in torrent file. Useful when torrent is updated and some files have been removed.
+CLI utility that parses specified torrent file and removes files that are not specified in torrent file. Useful when torrent is updated and some files have been removed. Also, it deletes empty directories.
 
 ## Install
 
@@ -17,9 +17,11 @@ gets files' paths from `nature-pack.torrent` and compares them with files from `
 
 ## Arguments
 
-`--torrent` (or `-t`) - path to torrent file
+`--torrent` (or `-t`) - Path to torrent file
 
-`--dir` (or `-d`) - path to directory with downloaded files
+`--dir` (or `-d`) - Path to directory with downloaded files
+
+`--verbose` - Output all outdated filenames. By default only first 20 filenames are displayed
 
 ### Build with
 
@@ -27,3 +29,5 @@ gets files' paths from `nature-pack.torrent` and compares them with files from `
 - [minimist](https://github.com/substack/minimist)
 - [enquirer](https://github.com/enquirer/enquirer)
 - [recursive-readdir](https://github.com/jergason/recursive-readdir)
+- [delete-empty](https://github.com/jonschlinkert/delete-empty)
+- [chalk](https://github.com/chalk/chalk)

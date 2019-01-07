@@ -1,33 +1,94 @@
 #!/usr/bin/env node
 
 const fs = require('fs')
+const os = require('os')
 const path = require('path')
 const util = require('util')
 const recursive = require('recursive-readdir')
 const parseTorrent = util.promisify(require('parse-torrent').remote)
 const unlink = util.promisify(fs.unlink)
+const deleteEmpty = require('delete-empty')
 const { Confirm } = require('enquirer')
+const chalk = require('chalk')
+
+const infoLog = chalk.green
+const errorLog = chalk.bgRed
+const fileLog = chalk.grey
+
+const IGNORE_GLOBS = ['~uTorrentPartFile*']
+const FILES_LIST_LIMIT = 20
+
+async function parseTorrentFile(torrentPath) {
+  return parseTorrent(torrentPath).catch(error => {
+    console.log(errorLog('Unable to parse torrent file'), error)
+  })
+}
+
+async function deleteFiles(filenames) {
+  try {
+    const deletePromises = filenames.map(filename => unlink(filename))
+    await Promise.all(deletePromises)
+  } catch (error) {
+    console.log(errorLog('Cannot delete files'), error)
+  }
+}
+
+async function deleteEmptyFolders(dirPath) {
+  try {
+    await deleteEmpty(dirPath)
+  } catch (error) {
+    console.log(errorLog('Cannot delete empty directories'), error)
+  }
+}
+
+function outputFilenames(filenames, verbose) {
+  if (verbose) {
+    filenames.forEach(filename => console.log(fileLog(filename)))
+  } else {
+    const limit = Math.min(FILES_LIST_LIMIT, filenames.length)
+
+    for (let i = 0; i < limit; i++) {
+      console.log(fileLog(filenames[i]))
+    }
+
+    if (limit < filenames.length) {
+      console.log(fileLog(`...and ${filenames.length - limit} more`))
+    }
+  }
+
+  console.log()
+}
 
 const argv = require('minimist')(process.argv.slice(2), {
   alias: { torrent: ['t'], dir: ['d'] },
-  default: { dir: process.cwd() }
+  boolean: ['verbose'],
+  default: { dir: process.cwd(), verbose: false }
 })
 
-const IGNORE_GLOBS = ['~uTorrentPartFile*']
-
-console.info('dir:'.padEnd(10), argv.dir)
-console.info('torrent:'.padEnd(10), argv.torrent)
+console.log(infoLog.bold('dir:'.padEnd(10)), argv.dir)
+console.log(infoLog.bold('torrent:'.padEnd(10)), argv.torrent, os.EOL)
 
 if (!argv.torrent) {
-  console.error(`'torrent' argument is required`)
+  console.log(errorLog(`${chalk.bold('torrent')} argument is required`))
   return
 }
 
 const torrentPath = argv.torrent
-const directoryPath = argv.dir
+const directoryPath = path.resolve(argv.dir)
+const verbose = argv.verbose
 
-async function processResults([{ name, files }, dirFiles]) {
-  console.info(`Parsed ${name}.`)
+console.log(infoLog('Parsing torrent file...'))
+Promise.all([
+  parseTorrentFile(torrentPath),
+  recursive(directoryPath, IGNORE_GLOBS)
+]).then(async ([parseResult, dirFiles]) => {
+  if (!parseResult) {
+    return
+  }
+
+  const { name, files } = parseResult
+
+  console.log(`Parsed ${chalk.bold(name)}.`, os.EOL)
   const rootDir = `${name}${path.sep}`
 
   const torrentFiles = files.map(file =>
@@ -43,10 +104,11 @@ async function processResults([{ name, files }, dirFiles]) {
   }, [])
 
   if (outdated.length) {
-    console.info(`Found ${outdated.length} outdated files.`)
+    console.log(`Found ${chalk.bold(outdated.length)} outdated file(s).`)
 
     const dirRoot = `${directoryPath}${path.sep}`
-    console.log(outdated.map(filename => filename.replace(dirRoot, '')))
+    const filenames = outdated.map(filename => filename.replace(dirRoot, ''))
+    outputFilenames(filenames, verbose)
 
     const deleteConfirm = new Confirm({
       name: 'delete',
@@ -54,23 +116,18 @@ async function processResults([{ name, files }, dirFiles]) {
       initial: true
     })
 
-    const deleteFiles = await deleteConfirm.run()
+    const deleteFilesAnswer = await deleteConfirm.run()
 
-    if (deleteFiles) {
-      console.info('Deleting outdated files...')
+    if (deleteFilesAnswer) {
+      console.log()
+      console.log(infoLog('Deleting outdated files...'))
 
-      const deletePromises = outdated.map(filename => unlink(filename))
-      await Promise.all(deletePromises)
+      await deleteFiles(outdated)
+      await deleteEmptyFolders(directoryPath)
 
-      console.info('Files deleted.')
+      console.log('Files deleted.')
     }
   } else {
-    console.info('No outdated files found!')
+    console.log('No outdated files found!')
   }
-}
-
-console.info('Parsing torrent file...')
-Promise.all([
-  parseTorrent(torrentPath),
-  recursive(directoryPath, IGNORE_GLOBS)
-]).then(processResults)
+})
