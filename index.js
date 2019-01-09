@@ -5,11 +5,12 @@ const os = require('os')
 const path = require('path')
 const util = require('util')
 const recursive = require('recursive-readdir')
-const parseTorrent = util.promisify(require('parse-torrent').remote)
 const unlink = util.promisify(fs.unlink)
 const deleteEmpty = require('delete-empty')
 const { Confirm } = require('enquirer')
 const chalk = require('chalk')
+const WebTorrent = require('webtorrent')
+const memoryChunkStore = require('memory-chunk-store')
 
 const infoLog = chalk.green
 const errorLog = chalk.bgRed
@@ -18,9 +19,29 @@ const fileLog = chalk.grey
 const IGNORE_GLOBS = ['~uTorrentPartFile*']
 const FILES_LIST_LIMIT = 20
 
-async function parseTorrentFile(torrentPath) {
-  return parseTorrent(torrentPath).catch(error => {
+async function getTorrentMetadata(torrentId) {
+  return new Promise(resolve => {
+    parseTorrent(torrentId, resolve)
+  }).catch(error => {
     console.log(errorLog('Unable to parse torrent file'), error)
+  })
+}
+
+function parseTorrent(torrentId, onDone) {
+  const client = new WebTorrent()
+
+  // Use memory-chunk-store to avoid creating directories inside tmp/webtorrent(https://github.com/webtorrent/webtorrent/issues/1562)
+  const torrent = client.add(torrentId, {
+    store: memoryChunkStore
+  })
+
+  torrent.on('metadata', function() {
+    onDone({
+      name: torrent.name,
+      files: torrent.files.map(file => file.path)
+    })
+
+    client.destroy()
   })
 }
 
@@ -73,13 +94,13 @@ if (!argv.torrent) {
   return
 }
 
-const torrentPath = argv.torrent
+const torrentId = argv.torrent
 const directoryPath = path.resolve(argv.dir)
 const verbose = argv.verbose
 
 console.log(infoLog('Parsing torrent file...'))
 Promise.all([
-  parseTorrentFile(torrentPath),
+  getTorrentMetadata(torrentId),
   recursive(directoryPath, IGNORE_GLOBS)
 ]).then(async ([parseResult, dirFiles]) => {
   if (!parseResult) {
@@ -89,10 +110,10 @@ Promise.all([
   const { name, files } = parseResult
 
   console.log(`Parsed ${chalk.bold(name)}.`, os.EOL)
-  const rootDir = `${name}${path.sep}`
 
+  const rootDir = `${name}${path.sep}`
   const torrentFiles = files.map(file =>
-    path.join(directoryPath, file.path.replace(rootDir, ''))
+    path.join(directoryPath, file.replace(rootDir, ''))
   )
 
   const outdated = dirFiles.reduce((result, filename) => {
