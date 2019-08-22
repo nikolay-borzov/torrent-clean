@@ -4,8 +4,8 @@
   "description": "Removes files that are not specified in selected torrent file",
   "author": "Nikolay Borzov <nikolay.n.borzov@gmail.com>",
   "license": "MIT",
-  "main": "index.js",
-  "bin": "index.js",
+  "main": "src/index.js",
+  "bin": "src/index.js",
   "preferGlobal": true,
   "repository": "https://github.com/nikolay-borzov/torrent-clean.git",
   "bugs": {
@@ -16,6 +16,11 @@
     "start": "node torrent-clean.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "files": [
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
   "dependencies": {
     "chalk": "^2.4.2",
     "delete-empty": "^3.0.0",
