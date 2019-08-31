@@ -1,22 +1,24 @@
 const WebTorrent = require('webtorrent')
 const memoryChunkStore = require('memory-chunk-store')
 
-const logColor = require('./log-color')
-
 async function getTorrentMetadata(torrentId) {
-  return new Promise(resolve => {
-    parseTorrent(torrentId, resolve)
-  }).catch(error => {
-    console.log(logColor.error('Unable to parse torrent'), error)
+  return new Promise((resolve, reject) => {
+    parseTorrent(torrentId, resolve, reject)
   })
 }
 
-function parseTorrent(torrentId, onDone) {
+function parseTorrent(torrentId, onDone, onError) {
   const client = new WebTorrent()
 
-  // Use memory-chunk-store to avoid creating directories inside tmp/webtorrent(https://github.com/webtorrent/webtorrent/issues/1562)
+  // Use memory-chunk-store to avoid creating directories inside tmp/webtorrent (https://github.com/webtorrent/webtorrent/issues/1562)
   const torrent = client.add(torrentId, {
     store: memoryChunkStore
+  })
+
+  torrent.on('error', error => {
+    onError(error)
+
+    client.destroy()
   })
 
   torrent.on('metadata', () => {
