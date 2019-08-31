@@ -3,7 +3,7 @@
 const os = require('os')
 const path = require('path')
 const recursive = require('recursive-readdir')
-const { Confirm } = require('enquirer')
+const { Confirm, MultiSelect } = require('enquirer')
 const chalk = require('chalk')
 
 const logColor = require('./log-color')
@@ -11,25 +11,6 @@ const parseTorrent = require('./parse-torrent')
 const deleteFilesAndEmptyFolders = require('./delete-files')
 
 const IGNORE_GLOBS = ['~uTorrentPartFile*']
-const FILES_LIST_LIMIT = 20
-
-function outputFilenames(filenames, verbose) {
-  if (verbose) {
-    filenames.forEach(filename => console.log(logColor.fileName(filename)))
-  } else {
-    const limit = Math.min(FILES_LIST_LIMIT, filenames.length)
-
-    for (let i = 0; i < limit; i++) {
-      console.log(logColor.fileName(filenames[i]))
-    }
-
-    if (limit < filenames.length) {
-      console.log(logColor.fileName(`...and ${filenames.length - limit} more`))
-    }
-  }
-
-  console.log()
-}
 
 const argv = require('minimist')(process.argv.slice(2), {
   alias: { torrent: ['t'], dir: ['d'] },
@@ -47,7 +28,6 @@ if (!argv.torrent) {
 
 const torrentId = argv.torrent
 const directoryPath = path.resolve(argv.dir)
-const verbose = argv.verbose
 
 console.log(logColor.info('Parsing torrent file...'))
 Promise.all([parseTorrent(torrentId), recursive(directoryPath, IGNORE_GLOBS)])
@@ -61,11 +41,13 @@ Promise.all([parseTorrent(torrentId), recursive(directoryPath, IGNORE_GLOBS)])
     console.log(`Parsed ${chalk.bold(name)}.`, os.EOL)
 
     const rootDir = `${name}${path.sep}`
+    // Get absolute paths of torrent files
     const torrentFiles = files.map(file =>
       path.join(directoryPath, file.replace(rootDir, ''))
     )
 
-    const outdated = dirFiles.reduce((result, filename) => {
+    // Get absolute paths of files not included in the torrent
+    const extraFiles = dirFiles.reduce((result, filename) => {
       if (torrentFiles.indexOf(filename) === -1) {
         result.push(filename)
       }
@@ -73,12 +55,37 @@ Promise.all([parseTorrent(torrentId), recursive(directoryPath, IGNORE_GLOBS)])
       return result
     }, [])
 
-    if (outdated.length) {
-      console.log(`Found ${chalk.bold(outdated.length)} extra file(s).`)
+    if (extraFiles.length) {
+      console.log(`Found ${chalk.bold(extraFiles.length)} extra file(s).`)
 
       const dirRoot = `${directoryPath}${path.sep}`
-      const filenames = outdated.map(filename => filename.replace(dirRoot, ''))
-      outputFilenames(filenames, verbose)
+
+      const filesChoices = extraFiles.map(filename => ({
+        name: filename.replace(dirRoot, ''),
+        value: filename
+      }))
+
+      const filesToDeleteMultiSelect = new MultiSelect({
+        name: 'selectFilesToDelete',
+        message: `Select file(s) to delete (Use 'Space')`,
+        choices: filesChoices,
+        initial() {
+          // TODO: Remove after https://github.com/enquirer/enquirer/issues/201 is fixed
+          this.options.initial = filesChoices
+          return filesChoices
+        },
+        // TODO: Just why? https://github.com/enquirer/enquirer/issues/121
+        result(names) {
+          // Get values from names
+          return names.map(name => this.find(name).value)
+        }
+      })
+
+      const filesToDelete = await filesToDeleteMultiSelect.run()
+
+      if (filesToDelete.length === 0) {
+        return
+      }
 
       const deleteConfirm = new Confirm({
         name: 'delete',
@@ -92,7 +99,7 @@ Promise.all([parseTorrent(torrentId), recursive(directoryPath, IGNORE_GLOBS)])
         console.log()
         console.log(logColor.info('Deleting extra files...'))
 
-        await deleteFilesAndEmptyFolders(outdated, directoryPath)
+        await deleteFilesAndEmptyFolders(filesToDelete, directoryPath)
 
         console.log('Files deleted.')
       }
