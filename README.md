@@ -1,6 +1,6 @@
-# torrent-clean
+# torrent-clean [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
-CLI utility that parses specified torrent file and removes files that are not specified in torrent file. Useful when torrent is updated and some files have been removed. Also, it deletes empty directories.
+CLI utility that parses specified torrent file and removes files that are not specified in the torrent file. Useful when torrent is updated and some files have been removed. Also, it deletes empty directories.
 
 ## Install
 
@@ -27,6 +27,15 @@ gets files' paths from `nature-pack.torrent` and compares them with files from `
 
 `--verbose` - Output all outdated filenames. By default only first 20 filenames are displayed
 
+`--version` - Outputs the app version
+
+## Config files
+
+`torrent-clean` allow specifying some parameters via config file (`.torrent-cleanrc`, `.torrent-cleanrc.json`, `.torrent-cleanrc.yaml`, `.torrent-cleanrc.yml` or `.torrent-cleanrc.js`). There are might be many files - `torrent-clean` will collect and merge all files up to root directory.
+
+Parameter are:
+ - `ignore` - an array of globs or filenames that will be excluded from the list of extra files.
+
 ## Known bugs
 
 - Torrent files with names containing unicode characters (e.g. 𝗚𝗪𝗔 1.txt) cannot be parsed correctly.
@@ -35,6 +44,7 @@ gets files' paths from `nature-pack.torrent` and compares them with files from `
 
 - [webtorrent](https://github.com/webtorrent/webtorrent)
 - [minimist](https://github.com/substack/minimist)
+- [cosmiconfig](https://github.com/davidtheclark/cosmiconfig)
 - [enquirer](https://github.com/enquirer/enquirer)
 - [recursive-readdir](https://github.com/jergason/recursive-readdir)
 - [delete-empty](https://github.com/jonschlinkert/delete-empty)

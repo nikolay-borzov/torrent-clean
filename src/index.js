@@ -6,31 +6,45 @@ const recursive = require('recursive-readdir')
 const { Confirm, MultiSelect } = require('enquirer')
 const chalk = require('chalk')
 
+const packageJson = require('../package.json')
 const logColor = require('./log-color')
+const loadConfig = require('./config-loader')
 const parseTorrent = require('./parse-torrent')
 const deleteFilesAndEmptyFolders = require('./delete-files')
 
-const IGNORE_GLOBS = ['~uTorrentPartFile*']
+const FILES_ON_SCREEN_LIMIT = 20
 
 const argv = require('minimist')(process.argv.slice(2), {
-  alias: { torrent: ['t'], dir: ['d'] },
-  boolean: ['verbose'],
-  default: { dir: process.cwd(), verbose: false }
+  alias: { torrent: ['t'], dir: ['d'], version: ['v'] },
+  default: { dir: process.cwd() }
 })
+
+if (argv.version) {
+  console.log(packageJson.version)
+  process.exit()
+}
 
 console.log(logColor.info.bold('dir:'.padEnd(10)), argv.dir)
 console.log(logColor.info.bold('torrent:'.padEnd(10)), argv.torrent, os.EOL)
 
 if (!argv.torrent) {
   console.log(logColor.error(`${chalk.bold('torrent')} argument is required`))
-  return
+  process.exit()
+}
+
+let config
+try {
+  config = loadConfig(argv.dir)
+} catch (error) {
+  console.log(logColor.error('Cannot parse config file'), error)
+  process.exit()
 }
 
 const torrentId = argv.torrent
 const directoryPath = path.resolve(argv.dir)
 
 console.log(logColor.info('Parsing torrent file...'))
-Promise.all([parseTorrent(torrentId), recursive(directoryPath, IGNORE_GLOBS)])
+Promise.all([parseTorrent(torrentId), recursive(directoryPath, config.ignore)])
   .then(async ([parseResult, dirFiles]) => {
     if (!parseResult) {
       return
@@ -69,14 +83,15 @@ Promise.all([parseTorrent(torrentId), recursive(directoryPath, IGNORE_GLOBS)])
         name: 'selectFilesToDelete',
         message: `Select file(s) to delete (Use 'Space')`,
         choices: filesChoices,
+        limit: FILES_ON_SCREEN_LIMIT,
+        indicator: '■',
         initial() {
           // TODO: Remove after https://github.com/enquirer/enquirer/issues/201 is fixed
           this.options.initial = filesChoices
           return filesChoices
         },
-        // TODO: Just why? https://github.com/enquirer/enquirer/issues/121
+        // Get values from selected names https://github.com/enquirer/enquirer/issues/121
         result(names) {
-          // Get values from names
           return names.map(name => this.find(name).value)
         }
       })
