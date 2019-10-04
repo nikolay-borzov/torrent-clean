@@ -41,7 +41,11 @@ function loadConfig(searchFrom) {
     .reverse()
     .reduce(merge, {})
 
-  mergedConfig.ignore = [...IGNORE_GLOBS, ...mergedConfig.ignore]
+  if (mergedConfig.ignore) {
+    mergedConfig.ignore = [...IGNORE_GLOBS, ...mergedConfig.ignore]
+  } else {
+    mergedConfig.ignore = IGNORE_GLOBS
+  }
 
   return mergedConfig
 }
