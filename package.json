@@ -1,6 +1,6 @@
 {
   "name": "torrent-clean",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "Removes files that are not specified in selected torrent file",
   "author": "Nikolay Borzov <nikolay.n.borzov@gmail.com>",
   "license": "MIT",
