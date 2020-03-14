@@ -1,5 +1,5 @@
 const path = require('path')
-const cosmiconfig = require('cosmiconfig')
+const { cosmiconfigSync } = require('cosmiconfig')
 const moduleName = require('../package.json').name
 
 /**
@@ -14,7 +14,7 @@ const IGNORE_GLOBS = ['~uTorrentPartFile*', `.${moduleName}rc*`]
  * @returns {Config}
  */
 function loadConfig(searchFrom) {
-  const explorer = cosmiconfig(moduleName, {
+  const explorer = cosmiconfigSync(moduleName, {
     searchPlaces: [
       `.${moduleName}rc`,
       `.${moduleName}rc.json`,
@@ -25,7 +25,7 @@ function loadConfig(searchFrom) {
   })
 
   const results = []
-  let result = explorer.searchSync(searchFrom)
+  let result = explorer.search(searchFrom)
 
   // Collect all configs up to root directory
   while (result) {
@@ -33,7 +33,7 @@ function loadConfig(searchFrom) {
     const configDirName = path.dirname(result.filepath)
     const parentDir = path.resolve(configDirName, '..')
 
-    result = explorer.searchSync(parentDir)
+    result = explorer.search(parentDir)
   }
 
   const mergedConfig = results
