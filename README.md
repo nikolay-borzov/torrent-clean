@@ -25,8 +25,6 @@ gets files' paths from `nature-pack.torrent` and compares them with files from `
 
 `--dir` (or `-d`) - Path to directory with downloaded files
 
-`--verbose` - Output all outdated filenames. By default only first 20 filenames are displayed
-
 `--version` - Outputs the app version
 
 ## Config files

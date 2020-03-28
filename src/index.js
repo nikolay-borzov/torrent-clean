@@ -3,7 +3,7 @@
 const os = require('os')
 const path = require('path')
 const recursive = require('recursive-readdir')
-const { Confirm, MultiSelect } = require('enquirer')
+const { Confirm } = require('enquirer')
 const chalk = require('chalk')
 
 const packageJson = require('../package.json')
@@ -11,17 +11,18 @@ const logColor = require('./log-color')
 const loadConfig = require('./config-loader')
 const parseTorrent = require('./parse-torrent')
 const deleteFilesAndEmptyFolders = require('./delete-files')
+const FilesSelect = require('./file-select-prompt')
 
 const FILES_ON_SCREEN_LIMIT = 20
 
 const argv = require('minimist')(process.argv.slice(2), {
   alias: { torrent: ['t'], dir: ['d'], version: ['v'] },
-  default: { dir: process.cwd() }
+  default: { dir: process.cwd() },
 })
 
 if (argv.version) {
   console.log(packageJson.version)
-  process.exit()
+  process.exit(0)
 }
 
 console.log(logColor.info.bold('dir:'.padEnd(10)), argv.dir)
@@ -29,7 +30,7 @@ console.log(logColor.info.bold('torrent:'.padEnd(10)), argv.torrent, os.EOL)
 
 if (!argv.torrent) {
   console.log(logColor.error(`${chalk.bold('torrent')} argument is required`))
-  process.exit()
+  process.exit(1)
 }
 
 let config
@@ -37,7 +38,7 @@ try {
   config = loadConfig(argv.dir)
 } catch (error) {
   console.log(logColor.error('Cannot parse config file'), error)
-  process.exit()
+  process.exit(1)
 }
 
 const torrentId = argv.torrent
@@ -56,7 +57,7 @@ Promise.all([parseTorrent(torrentId), recursive(directoryPath, config.ignore)])
 
     const rootDir = `${name}${path.sep}`
     // Get absolute paths of torrent files
-    const torrentFiles = files.map(file =>
+    const torrentFiles = files.map((file) =>
       path.join(directoryPath, file.replace(rootDir, ''))
     )
 
@@ -74,14 +75,14 @@ Promise.all([parseTorrent(torrentId), recursive(directoryPath, config.ignore)])
 
       const dirRoot = `${directoryPath}${path.sep}`
 
-      const filesChoices = extraFiles.map(filename => ({
+      const filesChoices = extraFiles.map((filename) => ({
         name: filename.replace(dirRoot, ''),
-        value: filename
+        value: filename,
       }))
 
-      const filesToDeleteMultiSelect = new MultiSelect({
+      const filesToDeleteMultiSelect = new FilesSelect({
         name: 'selectFilesToDelete',
-        message: `Select file(s) to delete (Use 'Space')`,
+        message: `Select file(s) to delete ('space' - toggle item selection, 'i' - invert selection)`,
         choices: filesChoices,
         limit: FILES_ON_SCREEN_LIMIT,
         indicator: '■',
@@ -92,8 +93,8 @@ Promise.all([parseTorrent(torrentId), recursive(directoryPath, config.ignore)])
         },
         // Get values from selected names https://github.com/enquirer/enquirer/issues/121
         result(names) {
-          return names.map(name => this.find(name).value)
-        }
+          return names.map((name) => this.find(name).value)
+        },
       })
 
       const filesToDelete = await filesToDeleteMultiSelect.run()
@@ -105,7 +106,7 @@ Promise.all([parseTorrent(torrentId), recursive(directoryPath, config.ignore)])
       const deleteConfirm = new Confirm({
         name: 'delete',
         message: 'Delete extra files?',
-        initial: true
+        initial: true,
       })
 
       const deleteFilesAnswer = await deleteConfirm.run()
@@ -122,6 +123,8 @@ Promise.all([parseTorrent(torrentId), recursive(directoryPath, config.ignore)])
       console.log('No extra files found!')
     }
   })
-  .catch(error => {
+  .catch((error) => {
     console.log(logColor.error('Error ocurred'), error)
+
+    process.exitCode = 1
   })

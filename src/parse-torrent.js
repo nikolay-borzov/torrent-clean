@@ -12,10 +12,10 @@ function parseTorrent(torrentId, onDone, onError) {
 
   // Use memory-chunk-store to avoid creating directories inside tmp/webtorrent (https://github.com/webtorrent/webtorrent/issues/1562)
   const torrent = client.add(torrentId, {
-    store: memoryChunkStore
+    store: memoryChunkStore,
   })
 
-  torrent.on('error', error => {
+  torrent.on('error', (error) => {
     onError(error)
 
     client.destroy()
@@ -24,7 +24,7 @@ function parseTorrent(torrentId, onDone, onError) {
   torrent.on('metadata', () => {
     onDone({
       name: torrent.name,
-      files: torrent.files.map(file => file.path)
+      files: torrent.files.map((file) => file.path),
     })
 
     client.destroy()

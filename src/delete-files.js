@@ -7,7 +7,7 @@ const logColor = require('./log-color')
 
 async function deleteFiles(filenames) {
   try {
-    const deletePromises = filenames.map(filename => unlink(filename))
+    const deletePromises = filenames.map((filename) => unlink(filename))
     await Promise.all(deletePromises)
   } catch (error) {
     console.log(logColor.error('Cannot delete files'), error)

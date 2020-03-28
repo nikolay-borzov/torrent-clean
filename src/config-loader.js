@@ -20,8 +20,8 @@ function loadConfig(searchFrom) {
       `.${moduleName}rc.json`,
       `.${moduleName}rc.yaml`,
       `.${moduleName}rc.yml`,
-      `.${moduleName}rc.js`
-    ]
+      `.${moduleName}rc.js`,
+    ],
   })
 
   const results = []
@@ -37,7 +37,7 @@ function loadConfig(searchFrom) {
   }
 
   const mergedConfig = results
-    .map(result => result.config)
+    .map((result) => result.config)
     .reverse()
     .reduce(merge, {})
 
