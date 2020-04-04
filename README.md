@@ -34,11 +34,11 @@ gets files' paths from `nature-pack.torrent` and compares them with files from `
 Parameter are:
  - `ignore` - an array of globs or filenames that will be excluded from the list of extra files.
 
-## Known bugs
+## Known issues
 
 - Torrent files with names containing unicode characters (e.g. 𝗚𝗪𝗔 1.txt) cannot be parsed correctly.
 
-### Build with
+### Built with
 
 - [webtorrent](https://github.com/webtorrent/webtorrent)
 - [minimist](https://github.com/substack/minimist)
