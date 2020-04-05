@@ -4,11 +4,21 @@ module.exports = {
   env: {
     node: true,
   },
-  plugins: ['prettier', 'standard'],
+  plugins: ['prettier', 'standard', 'jsdoc'],
   extends: [
     'standard',
     'prettier',
     'plugin:prettier/recommended',
-    'prettier/standard'
-  ]
+    'prettier/standard',
+    'plugin:jsdoc/recommended'
+  ],
+  'settings': {
+    'jsdoc': {
+      'mode': 'typescript'
+    }
+  },
+  rules: {
+    'jsdoc/require-param-description': 'off',
+    'jsdoc/require-returns-description': 'off'
+  }
 }

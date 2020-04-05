@@ -2,10 +2,18 @@
   "name": "torrent-clean",
   "version": "1.5.0",
   "description": "Removes files that are not specified in selected torrent file",
+  "keywords": [
+    "torrent",
+    "node",
+    "cli"
+  ],
   "author": "Nikolay Borzov <nikolay.n.borzov@gmail.com>",
   "license": "MIT",
-  "main": "src/index.js",
-  "bin": "src/index.js",
+  "main": "lib/index.js",
+  "bin": {
+    "torrent-clean": "bin/torrent-clean.js",
+    "tc": "bin/torrent-clean.js"
+  },
   "engines": {
     "node": ">=10"
   },
@@ -20,7 +28,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "files": [
-    "src"
+    "bin",
+    "lib"
   ],
   "dependencies": {
     "chalk": "^4.0.0",
@@ -38,6 +47,7 @@
     "eslint-config-prettier": "^6.10.1",
     "eslint-config-standard": "^14.1.1",
     "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-jsdoc": "^22.1.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^3.1.2",
     "eslint-plugin-promise": "^4.2.1",
