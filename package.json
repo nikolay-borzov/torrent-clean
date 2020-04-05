@@ -1,7 +1,7 @@
 {
   "name": "torrent-clean",
   "version": "1.5.0",
-  "description": "Removes files that are not specified in selected torrent file",
+  "description": "Deletes files that are not listed in selected torrent file",
   "keywords": [
     "torrent",
     "node",

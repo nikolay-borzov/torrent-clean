@@ -1,6 +1,6 @@
 # torrent-clean [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
-CLI utility that parses specified torrent file and removes files that are not specified in the torrent file. Useful when torrent is updated and some files have been removed. Also, it deletes empty directories.
+CLI utility deletes files not listed in selected torrent. Useful when torrent is updated and some files have been removed.
 
 ## Install
 
@@ -29,7 +29,7 @@ gets files' paths from `nature-pack.torrent` and compares them with files from `
 
 ## Config files
 
-`torrent-clean` allow specifying some parameters via config file (`.torrent-cleanrc`, `.torrent-cleanrc.json`, `.torrent-cleanrc.yaml`, `.torrent-cleanrc.yml` or `.torrent-cleanrc.js`). There are might be many files - `torrent-clean` will collect and merge all files up to root directory.
+`torrent-clean` allows specifying some parameters via config file (`.torrent-cleanrc`, `.torrent-cleanrc.json`, `.torrent-cleanrc.yaml`, `.torrent-cleanrc.yml` or `.torrent-cleanrc.js`). There are might be many files - `torrent-clean` will collect and merge all files up to root directory. The closer config to the directory is, the higher its priority
 
 Parameter are:
  - `ignore` - an array of globs or filenames that will be excluded from the list of extra files.
@@ -37,6 +37,7 @@ Parameter are:
 ## Known issues
 
 - Torrent files with names containing unicode characters (e.g. 𝗚𝗪𝗔 1.txt) cannot be parsed correctly.
+- Parsing torrent by hash can sometimes hang. It's better to pass path to torrent file.
 
 ### Built with
 
