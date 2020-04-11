@@ -5,7 +5,7 @@ const { createTempDirectory } = require('create-temp-directory')
 const util = require('util')
 const createTorrent = util.promisify(require('create-torrent'))
 
-const { cleanTorrentDir } = require('../lib/api')
+const cleanTorrentDir = require('../lib/api')
 const { createFiles } = require('./utils')
 
 test.beforeEach('Create temp directory', async (t) => {
