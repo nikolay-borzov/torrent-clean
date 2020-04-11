@@ -5,7 +5,7 @@ const path = require('path')
 const { Confirm } = require('enquirer')
 const chalk = require('chalk')
 
-const cleanTorrentDirectory = require('../lib/index')
+const cleanTorrentDir = require('../lib/api')
 const packageJson = require('../package.json')
 const logColor = require('../lib/log-color')
 const FilesSelect = require('../lib/file-select-prompt')
@@ -35,7 +35,7 @@ const directoryPath = path.resolve(argv.dir)
 
 console.log(logColor.info('Parsing torrent file...'))
 
-cleanTorrentDirectory({ torrentId, directoryPath })
+cleanTorrentDir({ torrentId, directoryPath, customConfig: { dryRun: true } })
   .then(async ({ extraFiles, deleteFiles }) => {
     if (extraFiles.length === 0) {
       console.log('No extra files found!')

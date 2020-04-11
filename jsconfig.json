@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
     "resolveJsonModule": true,
-    "checkJs": true
+    "checkJs": true,
+    "strict": true
   },
   "exclude": ["node_modules"]
 }
