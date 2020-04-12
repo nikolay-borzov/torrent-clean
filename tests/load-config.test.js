@@ -2,7 +2,7 @@ const test = require('ava')
 const { createTempDirectory } = require('create-temp-directory')
 const path = require('path')
 
-const { loadConfig } = require('../lib/config-loader')
+const { loadConfig } = require('../lib/load-config')
 const { createFiles } = require('./utils')
 
 test.beforeEach('Create temp directory', async (t) => {
@@ -13,7 +13,7 @@ test.afterEach.always('Remove temp directory', async (t) => {
   await t.context.tempDir.remove()
 })
 
-/** @type {import('../lib/config-loader').TorrentCleanConfig} */
+/** @type {import('../lib/load-config').TorrentCleanConfig} */
 const DEFAULT_CONFIG = {
   ignore: ['~uTorrentPartFile*', '.torrent-cleanrc*'],
 }

@@ -28,6 +28,7 @@ test('cleanTorrentDir » should clean directory from extra files', async (t) => 
           nature: {
             set1: {
               'image1.jpg': '[binary]',
+              '~image1.jpg': '[binary]',
             },
             set2: {
               'image2.jpg': '[binary]',
@@ -54,7 +55,11 @@ test('cleanTorrentDir » should clean directory from extra files', async (t) => 
     name: 'Nature Wallpapers',
   })
 
-  await cleanTorrentDir({ torrentId, directoryPath })
+  await cleanTorrentDir({
+    torrentId,
+    directoryPath,
+    customConfig: { ignore: ['**/~*'] },
+  })
 
   const expectDeleted = ['set2/image2 (Copy).jpg'].map((filename) =>
     path.join(directoryPath, filename)
@@ -66,6 +71,7 @@ test('cleanTorrentDir » should clean directory from extra files', async (t) => 
 
   const expectKept = [
     'set1/image1.jpg',
+    'set1/~image1.jpg',
     'set2/image2.jpg',
     'edited/image1.jpg',
   ].map((filename) => path.join(directoryPath, filename))

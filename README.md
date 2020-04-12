@@ -52,6 +52,7 @@ Parameter are:
 - [minimist](https://github.com/substack/minimist)
 - [cosmiconfig](https://github.com/davidtheclark/cosmiconfig)
 - [enquirer](https://github.com/enquirer/enquirer)
-- [recursive-readdir](https://github.com/jergason/recursive-readdir)
+- [readdirp](https://github.com/paulmillr/readdirp)
+- [picomatch](https://github.com/micromatch/picomatch)
 - [delete-empty](https://github.com/jonschlinkert/delete-empty)
 - [chalk](https://github.com/chalk/chalk)
