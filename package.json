@@ -1,6 +1,6 @@
 {
   "name": "torrent-clean",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "Deletes files that are not listed in selected torrent file",
   "keywords": [
     "torrent",
@@ -57,7 +57,7 @@
     "eslint-config-standard": "^14.1.1",
     "eslint-plugin-ava": "^10.2.0",
     "eslint-plugin-import": "^2.20.2",
-    "eslint-plugin-jsdoc": "^22.1.0",
+    "eslint-plugin-jsdoc": "^23.0.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^3.1.2",
     "eslint-plugin-promise": "^4.2.1",
