@@ -39,7 +39,48 @@ gets files' paths from `nature-pack.torrent` and compares them with files from `
 `torrent-clean` allows specifying some parameters via config file (`.torrent-cleanrc`, `.torrent-cleanrc.json`, `.torrent-cleanrc.yaml`, `.torrent-cleanrc.yml` or `.torrent-cleanrc.js`). There are might be many files - `torrent-clean` will collect and merge all files up to root directory. The closer config to the directory is, the higher its priority
 
 Parameter are:
- - `ignore` - an array of globs or filenames that will be excluded from the list of extra files.
+ - `ignore` - an array of globs (picomatch) or filenames that will be excluded from the list of extra files.
+
+## API
+`cleanTorrentDir` accepts options object:
+```javascript
+{
+  torrentId: '6a9759bffd5c0af65319979fb7832189f4f3c35d',
+  // Directory to clean
+  directoryPath: 'C:/Downloads/wallpapers/nature',
+  // Do not delete files immediately. Instead return `deleteFiles` function
+  dryRun: true,
+  // Config with highest priority
+  customConfig: { ignore: ['**/*\(edited\)*'] }
+}
+```
+
+
+```javascript
+const cleanTorrentDir = require('torrent-clean')
+
+const { extraFiles } = await cleanTorrentDir({
+  torrentId: 'C:/Downloads/torrents/nature wallpapers.torrent',
+  directoryPath: 'C:/Downloads/wallpapers/nature'
+})
+
+console.log('Removed', extraFiles)
+```
+
+```javascript
+const cleanTorrentDir = require('torrent-clean')
+
+const { extraFiles, deleteFiles } = await cleanTorrentDir({
+  torrentId: '6a9759bffd5c0af65319979fb7832189f4f3c35d',
+  directoryPath: 'C:/Downloads/wallpapers/nature',
+  dryRun: true,
+  customConfig: { ignore: ['**/*\(edited\)*'] }
+})
+
+console.log('Removing', extraFiles)
+
+await deleteFiles(extraFiles)
+```
 
 ## Known issues
 

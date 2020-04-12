@@ -35,7 +35,7 @@ const directoryPath = path.resolve(argv.dir)
 
 console.log(logColor.info('Parsing torrent file...'))
 
-cleanTorrentDir({ torrentId, directoryPath, customConfig: { dryRun: true } })
+cleanTorrentDir({ torrentId, directoryPath, dryRun: true })
   .then(async ({ extraFiles, deleteFiles }) => {
     if (extraFiles.length === 0) {
       console.log('No extra files found!')
