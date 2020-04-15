@@ -1,5 +1,5 @@
 {
-  "name": "torrent-clean",
+  "name": "@nikolay-borzov/torrent-clean",
   "version": "1.6.0",
   "description": "Deletes files that are not listed in selected torrent file",
   "keywords": [
@@ -35,6 +35,9 @@
       "tests/*.test.js"
     ],
     "verbose": true
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "dependencies": {
     "chalk": "^4.0.0",
