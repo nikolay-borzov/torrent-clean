@@ -10,7 +10,7 @@ CLI utility deletes files not listed in selected torrent. Useful when torrent is
 ## Install
 
 ```
-npm i -g torrent-clean
+npm i -g @nikolay-borzov\torrent-clean
 ```
 
 ## Usage
