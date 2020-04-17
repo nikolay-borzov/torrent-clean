@@ -1,5 +1,6 @@
 # torrent-clean
 [![NPM version][npm-image]][npm-url]
+![][CI-image]
 [![Inline docs][docs-image]][docs-url]
 [![Known Vulnerabilities][vulnerabilities-image]][vulnerabilities-url]
 [![Maintainability][maintability-image]][maintability-url]
@@ -8,6 +9,7 @@
 
 [npm-image]: https://img.shields.io/npm/v/torrent-clean.svg
 [npm-url]: https://npmjs.org/package/torrent-clean
+[CI-image]: https://github.com/nikolay-borzov/torrent-clean/workflows/CI/badge.svg
 [docs-image]: https://inch-ci.org/github/nikolay-borzov/torrent-clean.svg?branch=master
 [docs-url]: https://inch-ci.org/github/nikolay-borzov/torrent-clean
 [vulnerabilities-image]: https://snyk.io/test/github/nikolay-borzov/torrent-clean/badge.svg?targetFile=package.json
