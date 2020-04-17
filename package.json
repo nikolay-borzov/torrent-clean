@@ -24,7 +24,8 @@
   },
   "homepage": "https://github.com/nikolay-borzov/torrent-clean#readme",
   "scripts": {
-    "test": "ava"
+    "test": "ava",
+    "lint-staged": "lint-staged"
   },
   "files": [
     "bin",
@@ -43,9 +44,6 @@
     "hooks": {
       "pre-commit": "lint-staged"
     }
-  },
-  "lint-staged": {
-    "*.js": ["eslint --cache --fix", "ava"]
   },
   "dependencies": {
     "chalk": "^4.0.0",

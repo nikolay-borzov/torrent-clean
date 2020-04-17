@@ -1,9 +1,23 @@
-# torrent-clean [![npm][npm-image]][npm-url] [![JavaScript Style Guide][standard-image]][standard-url]
+# torrent-clean
+[![NPM version][npm-image]][npm-url]
+[![Inline docs][docs-image]][docs-url]
+[![Known Vulnerabilities][vulnerabilities-image]][vulnerabilities-url]
+[![Maintainability][maintability-image]][maintability-url]
+[![Style Guide][style-guide-image]][style-guide-url]
+[![Dependencies Status][dependencies-image]][dependencies-url]
 
 [npm-image]: https://img.shields.io/npm/v/torrent-clean.svg
 [npm-url]: https://npmjs.org/package/torrent-clean
-[standard-image]: https://img.shields.io/badge/code_style-standard-brightgreen.svg
-[standard-url]: https://standardjs.com
+[docs-image]: https://inch-ci.org/github/nikolay-borzov/torrent-clean.svg?branch=master
+[docs-url]: https://inch-ci.org/github/nikolay-borzov/torrent-clean
+[vulnerabilities-image]: https://snyk.io/test/github/nikolay-borzov/torrent-clean/badge.svg?targetFile=package.json
+[vulnerabilities-url]: https://snyk.io/test/github/nikolay-borzov/torrent-clean?targetFile=package.json
+[maintability-image]: https://api.codeclimate.com/v1/badges/093465c943260646aa40/maintainability
+[maintability-url]: https://codeclimate.com/github/nikolay-borzov/torrent-clean/maintainability
+[style-guide-image]: https://img.shields.io/badge/code_style-standard-brightgreen.svg
+[style-guide-url]: https://standardjs.com
+[dependencies-image]: https://david-dm.org/nikolay-borzov/torrent-clean/status.svg
+[dependencies-url]: https://david-dm.org/nikolay-borzov/torrent-clean
 
 CLI utility deletes files not listed in selected torrent. Useful when torrent is updated and some files have been removed.
 
