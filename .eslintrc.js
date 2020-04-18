@@ -10,6 +10,7 @@ module.exports = {
     'prettier',
     'plugin:prettier/recommended',
     'prettier/standard',
+    'plugin:node/recommended',
     'plugin:jsdoc/recommended'
   ],
   'settings': {
