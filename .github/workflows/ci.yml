@@ -6,13 +6,13 @@ on:
     paths: [ '**.js' ]
 
 jobs:
-  tests:
+  test:
     strategy:
       matrix:
         node: [ 10, 12, 13 ]
         os: [ windows-latest, ubuntu-latest, macos-latest ]
 
-    name: Node.js v${{ matrix.node }} on ${{ matrix.os }}
+    name: Test with ava (Node.js v${{ matrix.node }} on ${{ matrix.os }})
 
     runs-on: ${{ matrix.os }}
 
@@ -24,3 +24,18 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: npm ci
       - run: npm test
+
+  lint:
+    name: Lint with ESLint
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 13
+        uses: actions/setup-node@v1
+        with:
+          node-version: 13
+      - run: npm ci
+      - run: npm run lint
+
