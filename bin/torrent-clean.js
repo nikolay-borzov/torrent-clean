@@ -20,30 +20,34 @@ const argv = require('minimist')(process.argv.slice(2), {
 if (argv.version) {
   console.log(packageJson.version)
 } else {
-  console.log(logColor.info.bold('dir:'.padEnd(10)), argv.dir)
-  console.log(logColor.info.bold('torrent:'.padEnd(10)), argv.torrent, os.EOL)
-
-  if (!argv.torrent) {
-    throw new Error(
-      logColor.error(`${chalk.bold('torrent')} argument is required`)
-    )
-  }
-
   const torrentId = argv.torrent
-  const directoryPath = path.resolve(argv.dir)
+  const dirPath = path.resolve(argv.dir)
 
-  console.log(logColor.info('Parsing torrent file...'))
+  cleanTorrentDir({
+    torrentId,
+    dirPath,
+    dryRun: true,
+    onConfigLoaded(torrentId) {
+      console.log(logColor.info.bold('directory:'.padEnd(10)), argv.dir)
+      console.log(logColor.info.bold('torrent:'.padEnd(10)), torrentId, os.EOL)
 
-  cleanTorrentDir({ torrentId, directoryPath, dryRun: true })
-    .then(async ({ extraFiles, deleteFiles }) => {
+      console.log(logColor.info('Parsing torrent file...'), os.EOL)
+    },
+  })
+    .then(async ({ torrentName, extraFiles, deleteFiles }) => {
+      console.log(`Parsed ${chalk.bold(torrentName)}`)
+
       if (extraFiles.length === 0) {
         console.log('No extra files found!')
         return
       }
 
-      console.log(`Found ${chalk.bold(extraFiles.length)} extra file(s).`)
+      console.log(
+        `Found ${chalk.bold(extraFiles.length)} extra file(s).`,
+        os.EOL
+      )
 
-      const dirRoot = `${directoryPath}${path.sep}`
+      const dirRoot = `${dirPath}${path.sep}`
 
       const filesChoices = extraFiles.map((filename) => ({
         name: filename.replace(dirRoot, ''),

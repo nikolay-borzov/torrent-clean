@@ -40,7 +40,7 @@ gets files' paths from `nature-pack.torrent` and compares them with files from `
 
 ## Arguments
 
-`--torrent` (or `-t`) - Torrent id (as described in [webtorrent api](https://github.com/webtorrent/webtorrent/blob/master/docs/api.md#clientaddtorrentid-opts-function-ontorrent-torrent-))
+`--torrent` (or `-t`) - Torrent ID (as described in [webtorrent api](https://github.com/webtorrent/webtorrent/blob/master/docs/api.md#clientaddtorrentid-opts-function-ontorrent-torrent-))
 - Magnet URI (e.g. `magnet:?xt=urn:btih:d2474e86c95b19b8bcfdb92bc12c9d44667cfa36`)
 - Info Hash (e.g. `d2474e86c95b19b8bcfdb92bc12c9d44667cfa36`)
 - http/https URL to a torrent file
@@ -52,10 +52,11 @@ gets files' paths from `nature-pack.torrent` and compares them with files from `
 
 ## Config files
 
-`torrent-clean` allows specifying some parameters via config file (`.torrent-cleanrc`, `.torrent-cleanrc.json`, `.torrent-cleanrc.yaml`, `.torrent-cleanrc.yml` or `.torrent-cleanrc.js`). There are might be many files - `torrent-clean` will collect and merge all files up to root directory. The closer config to the directory is, the higher its priority
+`torrent-clean` allows specifying some parameters via config file (`.torrent-cleanrc`, `.torrent-cleanrc.json`, `.torrent-cleanrc.yaml`, `.torrent-cleanrc.yml`). There might be many files - `torrent-clean` will collect and merge all files up to root directory. The closer config to the directory is, the higher its priority.
 
 Parameter are:
- - `ignore` - an array of globs (picomatch) or filenames that will be excluded from the list of extra files.
+ - `ignore: string[]` - an array of globs (picomatch) or filenames that will be excluded from the list of extra files.
+ - `rememberLastTorrent: boolean` - Enable remembering last specified torrent ID for specified directory to `lastTorrent` config parameter. Only string values are saved. `lastTorrent` is used when `--torrent` argument is not set.
 
 ## API
 `cleanTorrentDir` accepts options object:
@@ -63,11 +64,13 @@ Parameter are:
 {
   torrentId: '6a9759bffd5c0af65319979fb7832189f4f3c35d',
   // Directory to clean
-  directoryPath: 'C:/Downloads/wallpapers/nature',
+  dirPath: 'C:/Downloads/wallpapers/nature',
   // Do not delete files immediately. Instead return `deleteFiles` function
   dryRun: true,
   // Config with highest priority
-  customConfig: { ignore: ['**/*\(edited\)*'] }
+  customConfig: { ignore: ['**/*\(edited\)*'] },
+  // Called when config is loaded
+  onConfigLoaded({ torrent }) { console.log(`Parsed ${torrent}`) }
 }
 ```
 
@@ -77,7 +80,7 @@ const cleanTorrentDir = require('torrent-clean')
 
 const { extraFiles } = await cleanTorrentDir({
   torrentId: 'C:/Downloads/torrents/nature wallpapers.torrent',
-  directoryPath: 'C:/Downloads/wallpapers/nature'
+  dirPath: 'C:/Downloads/wallpapers/nature'
 })
 
 console.log('Removed', extraFiles)
@@ -88,7 +91,7 @@ const cleanTorrentDir = require('torrent-clean')
 
 const { extraFiles, deleteFiles } = await cleanTorrentDir({
   torrentId: '6a9759bffd5c0af65319979fb7832189f4f3c35d',
-  directoryPath: 'C:/Downloads/wallpapers/nature',
+  dirPath: 'C:/Downloads/wallpapers/nature',
   dryRun: true,
   customConfig: { ignore: ['**/*\(edited\)*'] }
 })

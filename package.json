@@ -1,6 +1,6 @@
 {
   "name": "@nikolay-borzov/torrent-clean",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "description": "Deletes files that are not listed in selected torrent file",
   "keywords": [
     "torrent",
@@ -25,7 +25,9 @@
   "homepage": "https://github.com/nikolay-borzov/torrent-clean#readme",
   "scripts": {
     "test": "ava",
-    "lint": "eslint **/*.js",
+    "test:coverage": "nyc ava",
+    "test:update-snapshot": "ava --update-snapshots",
+    "lint": "eslint \"**/*.js\"",
     "lint-staged": "lint-staged"
   },
   "files": [
@@ -41,6 +43,12 @@
     ],
     "verbose": true
   },
+  "nyc": {
+    "reporter": [
+      "text",
+      "lcov"
+    ]
+  },
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"
@@ -55,10 +63,11 @@
     "minimist": "^1.2.5",
     "picomatch": "^2.2.2",
     "readdirp": "^3.4.0",
-    "webtorrent": "^0.108.1"
+    "webtorrent": "^0.108.1",
+    "yaml": "^1.9.2"
   },
   "devDependencies": {
-    "ava": "^3.7.0",
+    "ava": "^3.7.1",
     "babel-eslint": "^10.1.0",
     "create-temp-directory": "^1.1.1",
     "create-torrent": "^4.4.1",
@@ -67,13 +76,14 @@
     "eslint-config-standard": "^14.1.1",
     "eslint-plugin-ava": "^10.2.0",
     "eslint-plugin-import": "^2.20.2",
-    "eslint-plugin-jsdoc": "^23.0.0",
+    "eslint-plugin-jsdoc": "^24.0.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^3.1.3",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
     "husky": "^4.2.5",
-    "lint-staged": "^10.1.5",
+    "lint-staged": "^10.1.6",
+    "nyc": "^15.0.1",
     "prettier": "^2.0.4"
   }
 }
