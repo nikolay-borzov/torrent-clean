@@ -7,8 +7,8 @@
 [![Style Guide][style-guide-image]][style-guide-url]
 [![Dependencies Status][dependencies-image]][dependencies-url]
 
-[npm-image]: https://img.shields.io/npm/v/torrent-clean.svg
-[npm-url]: https://npmjs.org/package/torrent-clean
+[npm-image]: https://img.shields.io/npm/v/@nikolay-borzov/torrent-clean.svg
+[npm-url]: https://npmjs.org/package/@nikolay-borzov/torrent-clean
 [CI-image]: https://github.com/nikolay-borzov/torrent-clean/workflows/CI/badge.svg
 [docs-image]: https://inch-ci.org/github/nikolay-borzov/torrent-clean.svg?branch=master
 [docs-url]: https://inch-ci.org/github/nikolay-borzov/torrent-clean
