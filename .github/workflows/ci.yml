@@ -25,6 +25,21 @@ jobs:
       - run: npm ci
       - run: npm test
 
+  coverage:
+    name: Collect and send coverage to Code Climate
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 13
+      - uses: marsam/codeclimate-action@v1
+        with:
+          command: nyc --reporter=lcov ava
+          reporter-id: ${{ secrets.CC_TEST_REPORTER_ID }}
+
   lint:
     name: Lint with ESLint
 
@@ -32,8 +47,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js 13
-        uses: actions/setup-node@v1
+      - uses: actions/setup-node@v1
         with:
           node-version: 13
       - run: npm ci
