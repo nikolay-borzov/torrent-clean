@@ -37,7 +37,7 @@ jobs:
           node-version: 13
       - uses: marsam/codeclimate-action@v1
         with:
-          command: nyc --reporter=lcov ava
+          command: npm run test:coverage:ci
           reporter-id: ${{ secrets.CC_TEST_REPORTER_ID }}
 
   lint:

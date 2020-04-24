@@ -27,6 +27,7 @@
     "test": "ava",
     "test:coverage": "nyc ava",
     "test:update-snapshot": "ava --update-snapshots",
+    "test:coverage:ci": "nyc --reporter=lcov ava",
     "lint": "eslint \"**/*.js\"",
     "lint-staged": "lint-staged"
   },
