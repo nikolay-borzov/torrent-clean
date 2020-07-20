@@ -9,10 +9,11 @@ const cleanTorrentDir = require('../lib/api')
 const packageJson = require('../package.json')
 const logColor = require('../lib/log-color')
 const FilesSelect = require('../lib/file-select-prompt')
+const minimist = require('minimist')
 
 const FILES_ON_SCREEN_LIMIT = 20
 
-const argv = require('minimist')(process.argv.slice(2), {
+const argv = minimist(process.argv.slice(2), {
   alias: { torrent: ['t'], dir: ['d'], version: ['v'] },
   default: { dir: process.cwd() },
 })

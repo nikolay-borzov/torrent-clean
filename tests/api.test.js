@@ -46,11 +46,11 @@ function createTestDir(tempDirPath) {
               'image2.jpg': '[binary]',
               'image2 (Copy).jpg': '[binary]',
             },
-            edited: {
+            '.edited': {
               'image1.jpg': '[binary]',
             },
           },
-          '.torrent-cleanrc': '{ "ignore": ["**/edited/*"] }',
+          '.torrent-cleanrc': '{ "ignore": [".edited/*"] }',
         },
       },
     },
@@ -60,6 +60,8 @@ function createTestDir(tempDirPath) {
 
 /**
  * Creates test torrent file
+ *
+ * @returns {Promise<Buffer>}
  */
 async function createStubTorrent() {
   const file1 = Buffer.from('[binary]')
@@ -75,6 +77,7 @@ async function createStubTorrent() {
 
 /**
  * @param {string} tempDirPath
+ * @returns {Promise<object>}
  */
 async function createTestContext(tempDirPath) {
   createTestDir(tempDirPath)
@@ -93,7 +96,7 @@ async function createTestContext(tempDirPath) {
       'set1/image1.jpg',
       'set1/~image1.jpg',
       'set2/image2.jpg',
-      'edited/image1.jpg',
+      '.edited/image1.jpg',
     ].map((filename) => path.join(dirPath, filename)),
   }
 }

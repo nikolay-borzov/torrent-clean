@@ -11,15 +11,15 @@ module.exports = {
     'plugin:prettier/recommended',
     'prettier/standard',
     'plugin:node/recommended',
-    'plugin:jsdoc/recommended'
+    'plugin:jsdoc/recommended',
   ],
-  'settings': {
-    'jsdoc': {
-      'mode': 'typescript'
-    }
+  settings: {
+    jsdoc: {
+      mode: 'typescript',
+    },
   },
   rules: {
     'jsdoc/require-param-description': 'off',
-    'jsdoc/require-returns-description': 'off'
-  }
+    'jsdoc/require-returns-description': 'off',
+  },
 }
