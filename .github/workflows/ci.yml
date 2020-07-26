@@ -35,6 +35,7 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 14
+      - run: npm ci
       - uses: marsam/codeclimate-action@v1
         with:
           command: npm run test:coverage:ci
