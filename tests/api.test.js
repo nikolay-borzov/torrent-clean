@@ -46,6 +46,9 @@ function createTestDir(tempDirPath) {
               'image2.jpg': '[binary]',
               'image2 (Copy).jpg': '[binary]',
             },
+            Set3: {
+              'image3.jpg': '[binary]',
+            },
             '.edited': {
               'image1.jpg': '[binary]',
             },
@@ -70,7 +73,10 @@ async function createStubTorrent() {
   const file2 = Buffer.from('[binary]')
   file2.name = 'set2/image2.jpg'
 
-  return createTorrent([file1, file2], {
+  const file3 = Buffer.from('[binary]')
+  file3.name = 'set3/image3.jpg'
+
+  return createTorrent([file1, file2, file3], {
     name: 'Nature Wallpapers',
   })
 }
@@ -124,6 +130,21 @@ test('cleanTorrentDir » should clean directory from extra files', async (t) => 
   expectKept.forEach((filename) => {
     t.true(fs.existsSync(filename), `"${filename}" should exist`)
   })
+})
+
+test('cleanTorrentDir » should ignore filename path case', async (t) => {
+  const { tempDir } = t.context
+
+  const { torrentId, dirPath } = await createTestContext(tempDir.path)
+
+  const expectKept = path.join(dirPath, 'Set3/image3.jpg')
+
+  await cleanTorrentDir({
+    torrentId,
+    dirPath,
+  })
+
+  t.true(fs.existsSync(expectKept), `"${expectKept}" should exist`)
 })
 
 test('cleanTorrentDir » should postpone files deleting if `dryRun` is set to `true`', async (t) => {
