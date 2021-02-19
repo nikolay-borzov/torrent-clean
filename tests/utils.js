@@ -1,18 +1,18 @@
-const fs = require('fs')
-const path = require('path')
+import fs from 'fs'
+import path from 'path'
 
 /**
  * @param {object} filesTree
  * @param {string} atPath
  */
-exports.createFiles = function createFiles(filesTree, atPath) {
+export function createFiles(filesTree, atPath) {
   fs.mkdirSync(atPath, { recursive: true })
 
-  Object.entries(filesTree).forEach(([filename, value]) => {
+  for (const [filename, value] of Object.entries(filesTree)) {
     if (typeof value === 'string') {
       fs.writeFileSync(path.join(atPath, filename), value)
     } else {
       createFiles(value, path.join(atPath, filename))
     }
-  })
+  }
 }

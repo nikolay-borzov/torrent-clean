@@ -2,15 +2,15 @@ name: CI
 
 on:
   push:
-    branches: [ master ]
-    paths: [ '**.js' ]
+    branches: [master]
+    paths: ['**.js']
 
 jobs:
   test:
     strategy:
       matrix:
-        node: [ 10, 12, 14 ]
-        os: [ windows-latest, ubuntu-latest, macos-latest ]
+        node: [12, 14]
+        os: [windows-latest, ubuntu-latest, macos-latest]
 
     name: Test with ava (Node.js v${{ matrix.node }} on ${{ matrix.os }})
 
@@ -53,4 +53,3 @@ jobs:
           node-version: 14
       - run: npm ci
       - run: npm run lint
-

@@ -1,10 +1,10 @@
-const test = require('ava')
-const { createTempDirectory } = require('create-temp-directory')
-const fs = require('fs')
-const path = require('path')
+import test from 'ava'
+import { createTempDirectory } from 'create-temp-directory'
+import fs from 'fs'
+import path from 'path'
 
-const { deleteFilesAndEmptyDirs } = require('../lib/delete-files')
-const { createFiles } = require('./utils')
+import { deleteFilesAndEmptyDirectories } from '../lib/delete-files.js'
+import { createFiles } from './utils.js'
 
 test.beforeEach('Create temp directory', async (t) => {
   t.context.tempDir = await createTempDirectory()
@@ -14,7 +14,7 @@ test.afterEach.always('Remove temp directory', async (t) => {
   await t.context.tempDir.remove()
 })
 
-test('deleteFilesAndEmptyDirs » should delete specified files and empty directories', async (t) => {
+test('deleteFilesAndEmptyDirectories » should delete specified files and empty directories', async (t) => {
   const { tempDir } = t.context
 
   createFiles(
@@ -32,7 +32,7 @@ test('deleteFilesAndEmptyDirs » should delete specified files and empty directo
     tempDir.path
   )
 
-  await deleteFilesAndEmptyDirs(tempDir.path, [
+  await deleteFilesAndEmptyDirectories(tempDir.path, [
     path.resolve(tempDir.path, 'images/nature/image2 (Copy).jpg'),
     path.resolve(tempDir.path, 'images/nature/Thumbs.db'),
   ])
@@ -43,16 +43,16 @@ test('deleteFilesAndEmptyDirs » should delete specified files and empty directo
     'images/tmp',
   ].map((filename) => path.join(tempDir.path, filename))
 
-  expectDeleted.forEach((filename) => {
+  for (const filename of expectDeleted) {
     t.falsy(fs.existsSync(filename), `${filename} should not exist`)
-  })
+  }
 
   const expectKept = [
     'images/nature/image1.jpg',
     'images/nature/image2.jpg',
   ].map((filename) => path.join(tempDir.path, filename))
 
-  expectKept.forEach((filename) => {
+  for (const filename of expectKept) {
     t.truthy(fs.existsSync(filename), `${filename} should exist`)
-  })
+  }
 })

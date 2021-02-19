@@ -1,15 +1,17 @@
 #!/usr/bin/env node
 
-const os = require('os')
-const path = require('path')
-const { Confirm } = require('enquirer')
-const chalk = require('chalk')
+import os from 'os'
+import path from 'path'
+import enquirer from 'enquirer'
+import chalk from 'chalk'
+import { readFileSync } from 'fs'
+import minimist from 'minimist'
 
-const cleanTorrentDir = require('../lib/api')
-const packageJson = require('../package.json')
-const logColor = require('../lib/log-color')
-const FilesSelect = require('../lib/file-select-prompt')
-const minimist = require('minimist')
+import { cleanTorrentDirectory } from '../lib/api.js'
+import * as logColor from '../lib/log-color.js'
+import { FilesSelect } from '../lib/file-select-prompt.js'
+
+const { Confirm } = enquirer
 
 const FILES_ON_SCREEN_LIMIT = 20
 
@@ -19,14 +21,17 @@ const argv = minimist(process.argv.slice(2), {
 })
 
 if (argv.version) {
+  const packageJsonPath = new URL('../package.json', import.meta.url).toString()
+  const packageJson = JSON.parse(readFileSync(packageJsonPath).toString())
+
   console.log(packageJson.version)
 } else {
   const torrentId = argv.torrent
-  const dirPath = path.resolve(argv.dir)
+  const directoryPath = path.resolve(argv.dir)
 
-  cleanTorrentDir({
+  cleanTorrentDirectory({
     torrentId,
-    dirPath,
+    directoryPath,
     dryRun: true,
     onConfigLoaded(torrentId) {
       console.log(logColor.info.bold('directory:'.padEnd(10)), argv.dir)
@@ -40,6 +45,7 @@ if (argv.version) {
 
       if (extraFiles.length === 0) {
         console.log('No extra files found!')
+
         return
       }
 
@@ -48,10 +54,10 @@ if (argv.version) {
         os.EOL
       )
 
-      const dirRoot = `${dirPath}${path.sep}`
+      const directoryRoot = `${directoryPath}${path.sep}`
 
       const filesChoices = extraFiles.map((filename) => ({
-        name: filename.replace(dirRoot, ''),
+        name: filename.replace(directoryRoot, ''),
         value: filename,
       }))
 
@@ -64,6 +70,7 @@ if (argv.version) {
         initial() {
           // TODO: Remove after https://github.com/enquirer/enquirer/issues/201 is fixed
           this.options.initial = filesChoices
+
           return filesChoices
         },
         // Get values from selected names https://github.com/enquirer/enquirer/issues/121

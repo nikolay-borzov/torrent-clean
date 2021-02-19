@@ -1,11 +1,11 @@
-const test = require('ava')
-const { createTempDirectory } = require('create-temp-directory')
-const path = require('path')
-const fs = require('fs')
-const YAML = require('yaml')
+import test from 'ava'
+import { createTempDirectory } from 'create-temp-directory'
+import path from 'path'
+import fs from 'fs'
+import YAML from 'yaml'
 
-const { loadConfig, saveConfig } = require('../lib/config')
-const { createFiles } = require('./utils')
+import { loadConfig, saveConfig } from '../lib/config.js'
+import { createFiles } from './utils.js'
 
 /**
  * @typedef {import('ava').ExecutionContext} ExecutionContext
@@ -38,7 +38,7 @@ test('loadConfig » should collect and merge configs up to root directory', asyn
 
   const expected = {
     config: {
-      ignore: [...DEFAULT_CONFIG.ignore, '*(Copy)*', 'Thumbs.db', '~*'],
+      ignore: [...(DEFAULT_CONFIG.ignore || []), '*(Copy)*', 'Thumbs.db', '~*'],
       rememberLastTorrent: true,
     },
     searchFromCosmiconfigResult: {
@@ -84,7 +84,7 @@ test('loadConfig » should accept config object', async (t) => {
 
   const expected = {
     config: {
-      ignore: [...DEFAULT_CONFIG.ignore, 'walkthrough.txt', '~*'],
+      ignore: [...(DEFAULT_CONFIG.ignore || []), 'walkthrough.txt', '~*'],
       rememberLastTorrent: true,
     },
     searchFromCosmiconfigResult: {
@@ -113,13 +113,13 @@ test('loadConfig » should accept config object', async (t) => {
   t.deepEqual(actual, expected)
 })
 
-test('saveConfig » should create config at `saveDirPath` if it does not exist', (t) => {
+test('saveConfig » should create config at `saveDirectoryPath` if it does not exist', (t) => {
   const { tempDir } = t.context
 
   /** @type {TorrentCleanConfig} */
-  const config = { lastTorrent: 'C:/downloads/nature-pack.torrent' }
-  const saveDirPath = path.join(tempDir.path, 'path/to/dir')
-  const filename = path.join(saveDirPath, '.torrent-cleanrc')
+  const config = { lastTorrent: 'C:/downloads/nature-pack.torrent', ignore: [] }
+  const saveDirectoryPath = path.join(tempDir.path, 'path/to/dir')
+  const filename = path.join(saveDirectoryPath, '.torrent-cleanrc')
 
   createFiles(
     {
@@ -134,7 +134,7 @@ test('saveConfig » should create config at `saveDirPath` if it does not exist',
 
   saveConfig({
     config,
-    saveDirPath,
+    saveDirectoryPath,
   })
 
   const fileContent = fs.readFileSync(filename).toString()
@@ -156,8 +156,8 @@ function saveConfigUpdateFileMacro(t, { filename, getFileContent }) {
     ignore: ['~*'],
     lastTorrent: 'C:/downloads/nature-pack.torrent',
   }
-  const saveDirPath = path.join(tempDir.path, 'downloads')
-  const existingConfigPath = path.join(saveDirPath, filename)
+  const saveDirectoryPath = path.join(tempDir.path, 'downloads')
+  const existingConfigPath = path.join(saveDirectoryPath, filename)
 
   createFiles(
     {
@@ -170,7 +170,7 @@ function saveConfigUpdateFileMacro(t, { filename, getFileContent }) {
 
   saveConfig({
     config,
-    saveDirPath,
+    saveDirectoryPath: saveDirectoryPath,
     existingConfigPath,
   })
 

@@ -1,13 +1,15 @@
-const test = require('ava')
-const fs = require('fs')
-const path = require('path')
-const { createTempDirectory } = require('create-temp-directory')
-const util = require('util')
-const createTorrent = util.promisify(require('create-torrent'))
-const YAML = require('yaml')
+import test from 'ava'
+import fs from 'fs'
+import path from 'path'
+import { createTempDirectory } from 'create-temp-directory'
+import { promisify } from 'util'
+import YAML from 'yaml'
+import createTorrentCallback from 'create-torrent'
 
-const cleanTorrentDir = require('../lib/api')
-const { createFiles } = require('./utils')
+import cleanTorrentDirectory from '../lib/api.js'
+import { createFiles } from './utils.js'
+
+const createTorrent = promisify(createTorrentCallback)
 
 /**
  * @typedef {import('../lib/config').TorrentCleanConfig} TorrentCleanConfig
@@ -21,18 +23,21 @@ test.afterEach.always('Remove temp directory', async (t) => {
   await t.context.tempDir.remove()
 })
 
-test('cleanTorrentDir » should throw if `torrentId` is not set', async (t) => {
-  await t.throwsAsync(async () => cleanTorrentDir({ dirPath: './downloads' }), {
-    message: `'torrentId' is required`,
-  })
+test('cleanTorrentDirectory » should throw if `torrentId` is not set', async (t) => {
+  await t.throwsAsync(
+    async () => cleanTorrentDirectory({ directoryPath: './downloads' }),
+    {
+      message: `'torrentId' is required`,
+    }
+  )
 })
 
 /**
- * Creates test torrent directory with files and configs
+ * Creates test torrent directory with files and configs.
  *
- * @param {string} tempDirPath
+ * @param {string} temporaryDirectoryPath
  */
-function createTestDir(tempDirPath) {
+function createTestDirectory(temporaryDirectoryPath) {
   createFiles(
     {
       downloads: {
@@ -57,138 +62,146 @@ function createTestDir(tempDirPath) {
         },
       },
     },
-    tempDirPath
+    temporaryDirectoryPath
   )
 }
 
 /**
- * Creates test torrent file
+ * Creates test torrent file.
  *
  * @returns {Promise<Buffer>}
  */
 async function createStubTorrent() {
   const file1 = Buffer.from('[binary]')
-  file1.name = 'set1/image1.jpg'
-
   const file2 = Buffer.from('[binary]')
-  file2.name = 'set2/image2.jpg'
-
   const file3 = Buffer.from('[binary]')
+
+  file1.name = 'set1/image1.jpg'
+  file2.name = 'set2/image2.jpg'
   file3.name = 'set3/image3.jpg'
 
-  return createTorrent([file1, file2, file3], {
-    name: 'Nature Wallpapers',
-  })
+  return createTorrent([file1, file2, file3])
 }
 
 /**
- * @param {string} tempDirPath
- * @returns {Promise<object>}
+ * @typedef {object} TestContext
+ * @property {Buffer} torrentId
+ * @property {string} directoryPath
+ * @property {string[]} expectDeleted
+ * @property {string[]} expectKept
  */
-async function createTestContext(tempDirPath) {
-  createTestDir(tempDirPath)
+
+/**
+ * @param {string} temporaryDirectoryPath
+ * @returns {Promise<TestContext>}
+ */
+async function createTestContext(temporaryDirectoryPath) {
+  createTestDirectory(temporaryDirectoryPath)
 
   const torrentId = await createStubTorrent()
 
-  const dirPath = path.resolve(tempDirPath, 'downloads/images/nature')
+  const directoryPath = path.resolve(
+    temporaryDirectoryPath,
+    'downloads/images/nature'
+  )
 
   return {
     torrentId,
-    dirPath,
+    directoryPath: directoryPath,
     expectDeleted: ['set2/image2 (Copy).jpg'].map((filename) =>
-      path.join(dirPath, filename)
+      path.join(directoryPath, filename)
     ),
     expectKept: [
       'set1/image1.jpg',
       'set1/~image1.jpg',
       'set2/image2.jpg',
       '.edited/image1.jpg',
-    ].map((filename) => path.join(dirPath, filename)),
+    ].map((filename) => path.join(directoryPath, filename)),
   }
 }
 
-test('cleanTorrentDir » should clean directory from extra files', async (t) => {
+test('cleanTorrentDirectory » should clean directory from extra files', async (t) => {
   const { tempDir } = t.context
 
   const {
     torrentId,
-    dirPath,
+    directoryPath,
     expectDeleted,
     expectKept,
   } = await createTestContext(tempDir.path)
 
-  await cleanTorrentDir({
+  await cleanTorrentDirectory({
     torrentId,
-    dirPath,
+    directoryPath,
     customConfig: { ignore: ['**/~*'] },
   })
 
-  expectDeleted.forEach((filename) => {
+  for (const filename of expectDeleted) {
     t.false(fs.existsSync(filename), `"${filename}" should not exist`)
-  })
+  }
 
-  expectKept.forEach((filename) => {
+  for (const filename of expectKept) {
     t.true(fs.existsSync(filename), `"${filename}" should exist`)
-  })
+  }
 })
 
-test('cleanTorrentDir » should ignore filename path case', async (t) => {
+test('cleanTorrentDirectory » should ignore filename path case', async (t) => {
   const { tempDir } = t.context
 
-  const { torrentId, dirPath } = await createTestContext(tempDir.path)
+  const { torrentId, directoryPath } = await createTestContext(tempDir.path)
 
-  const expectKept = path.join(dirPath, 'Set3/image3.jpg')
+  const expectKept = path.join(directoryPath, 'Set3/image3.jpg')
 
-  await cleanTorrentDir({
+  await cleanTorrentDirectory({
     torrentId,
-    dirPath,
+    directoryPath,
   })
 
   t.true(fs.existsSync(expectKept), `"${expectKept}" should exist`)
 })
 
-test('cleanTorrentDir » should postpone files deleting if `dryRun` is set to `true`', async (t) => {
+test('cleanTorrentDirectory » should postpone files deleting if `dryRun` is set to `true`', async (t) => {
   const { tempDir } = t.context
 
   const {
     torrentId,
-    dirPath,
+    directoryPath,
     expectDeleted,
     expectKept,
   } = await createTestContext(tempDir.path)
 
-  const { extraFiles, deleteFiles } = await cleanTorrentDir({
+  const { extraFiles, deleteFiles } = await cleanTorrentDirectory({
     torrentId,
-    dirPath,
+    directoryPath,
     dryRun: true,
     customConfig: { ignore: ['**/~*'] },
   })
 
-  expectDeleted.forEach((filename) => {
+  for (const filename of expectDeleted) {
     t.true(fs.existsSync(filename), `"${filename}" should exist`)
-  })
+  }
 
-  expectKept.forEach((filename) => {
+  for (const filename of expectKept) {
     t.true(fs.existsSync(filename), `"${filename}" should exist`)
-  })
+  }
 
   await deleteFiles(extraFiles)
 
-  expectDeleted.forEach((filename) => {
+  for (const filename of expectDeleted) {
     t.false(fs.existsSync(filename), `"${filename}" should not exist`)
-  })
+  }
 
-  expectKept.forEach((filename) => {
+  for (const filename of expectKept) {
     t.true(fs.existsSync(filename), `"${filename}" should exist`)
-  })
+  }
 })
 
-test('cleanTorrentDir » should get `torrentId` from `lastTorrent` config property if `rememberLastTorrent` is set to `true`', async (t) => {
+test('cleanTorrentDirectory » should get `torrentId` from `lastTorrent` config property if `rememberLastTorrent` is set to `true`', async (t) => {
   const { tempDir } = t.context
 
   const {
     torrentId,
-    dirPath,
+    directoryPath,
     expectDeleted,
     expectKept,
   } = await createTestContext(tempDir.path)
@@ -201,35 +214,35 @@ test('cleanTorrentDir » should get `torrentId` from `lastTorrent` config proper
   fs.writeFileSync(torrentFilePath, torrentId)
 
   fs.writeFileSync(
-    path.join(tempDir.path, 'downloads', '.torrent-cleanrc'),
+    path.join(tempDir.path, 'downloads', '.torrent-cleanrc.json'),
     JSON.stringify({
       rememberLastTorrent: true,
     })
   )
 
   fs.writeFileSync(
-    path.join(dirPath, '.torrent-cleanrc'),
+    path.join(directoryPath, '.torrent-cleanrc.json'),
     JSON.stringify({ ignore: ['**/edited/*'], lastTorrent: torrentFilePath })
   )
 
-  await cleanTorrentDir({
-    dirPath,
+  await cleanTorrentDirectory({
+    directoryPath,
     customConfig: { ignore: ['**/~*'] },
   })
 
-  expectDeleted.forEach((filename) => {
+  for (const filename of expectDeleted) {
     t.false(fs.existsSync(filename), `"${filename}" should not exist`)
-  })
+  }
 
-  expectKept.forEach((filename) => {
+  for (const filename of expectKept) {
     t.true(fs.existsSync(filename), `"${filename}" should exist`)
-  })
+  }
 })
 
-test('cleanTorrentDir » should save `torrentId` to `lastTorrent` config  property if `rememberLastTorrent` is set to `true`', async (t) => {
+test('cleanTorrentDirectory » should save `torrentId` to `lastTorrent` config  property if `rememberLastTorrent` is set to `true`', async (t) => {
   const { tempDir } = t.context
 
-  const { torrentId, dirPath } = await createTestContext(tempDir.path)
+  const { torrentId, directoryPath } = await createTestContext(tempDir.path)
 
   const torrentFilePath = path.join(
     tempDir.path,
@@ -239,21 +252,21 @@ test('cleanTorrentDir » should save `torrentId` to `lastTorrent` config  proper
   fs.writeFileSync(torrentFilePath, torrentId)
 
   fs.writeFileSync(
-    path.join(tempDir.path, 'downloads', '.torrent-cleanrc'),
+    path.join(tempDir.path, 'downloads', '.torrent-cleanrc.json'),
     JSON.stringify({
       rememberLastTorrent: true,
     })
   )
 
-  await cleanTorrentDir({
+  await cleanTorrentDirectory({
     torrentId: torrentFilePath,
-    dirPath,
+    directoryPath,
     customConfig: { ignore: ['**/~*'] },
   })
 
   /** @type {TorrentCleanConfig} */
   const savedConfig = YAML.parse(
-    fs.readFileSync(path.resolve(dirPath, '.torrent-cleanrc')).toString()
+    fs.readFileSync(path.resolve(directoryPath, '.torrent-cleanrc')).toString()
   )
 
   t.assert(savedConfig.lastTorrent === torrentFilePath)
