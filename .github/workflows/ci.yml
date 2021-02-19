@@ -36,10 +36,11 @@ jobs:
         with:
           node-version: 14
       - run: npm ci
-      - uses: marsam/codeclimate-action@v1
+      - uses: paambaati/codeclimate-action@v2.7.5
+        env:
+          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
         with:
-          command: npm run test:coverage:ci
-          reporter-id: ${{ secrets.CC_TEST_REPORTER_ID }}
+          coverageCommand: npm run test:coverage:ci
 
   lint:
     name: Lint with ESLint
