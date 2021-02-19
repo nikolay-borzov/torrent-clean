@@ -6,7 +6,7 @@ on:
     paths:
       - '**.c?js'
       - '**.json'
-      - '.github\workflows\ci.yml'
+      - '.github/workflows/ci.yml'
 
 jobs:
   test:
