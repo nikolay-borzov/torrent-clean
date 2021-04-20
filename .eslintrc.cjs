@@ -1,6 +1,13 @@
 module.exports = {
   root: true,
-  ignorePatterns: ['**/*.*', '!**/*.js', '!**/*.cjs', 'node_modules', '/dist'],
+  ignorePatterns: [
+    '**/*.*',
+    '!**/*.js',
+    '!**/*.cjs',
+    'node_modules',
+    '/dist',
+    '/coverage',
+  ],
   env: {
     node: true,
   },
@@ -71,7 +78,6 @@ module.exports = {
   overrides: [
     {
       files: 'tests/**/*',
-      plugins: ['ava'],
       extends: ['plugin:ava/recommended'],
     },
   ],

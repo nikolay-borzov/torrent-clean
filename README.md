@@ -19,7 +19,7 @@
 [style-guide-image]: https://img.shields.io/badge/code_style-standard-brightgreen.svg
 [style-guide-url]: https://standardjs.com
 
-CLI utility deletes files not listed in selected torrent. Useful when torrent is updated and some files have been removed.
+CLI utility deletes files not listed in the selected torrent. Useful when torrent is updated and some files have been removed.
 
 ## Install
 

@@ -119,7 +119,7 @@ test('saveConfig » should create config at `saveDirectoryPath` if it does not e
   /** @type {TorrentCleanConfig} */
   const config = { lastTorrent: 'C:/downloads/nature-pack.torrent', ignore: [] }
   const saveDirectoryPath = path.join(tempDir.path, 'path/to/dir')
-  const filename = path.join(saveDirectoryPath, '.torrent-cleanrc')
+  const filename = path.join(saveDirectoryPath, '.torrent-cleanrc.yaml')
 
   createFiles(
     {

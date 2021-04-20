@@ -1,7 +1,8 @@
 module.exports = {
   '**/*.?(c)js': (filenames) => [
     `eslint --cache --fix ${filenames.join(' ')}`,
-    'ava',
+    'ava --fail-fast',
   ],
-  '**/*.*': 'prettier --write --ignore-unknown',
+  // Format supported non JavaScript files
+  '**/*.!(?(c)js)': 'prettier --write --ignore-unknown',
 }

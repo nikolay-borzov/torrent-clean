@@ -266,7 +266,9 @@ test('cleanTorrentDirectory » should save `torrentId` to `lastTorrent` config  
 
   /** @type {TorrentCleanConfig} */
   const savedConfig = YAML.parse(
-    fs.readFileSync(path.resolve(directoryPath, '.torrent-cleanrc')).toString()
+    fs
+      .readFileSync(path.resolve(directoryPath, '.torrent-cleanrc.yaml'))
+      .toString()
   )
 
   t.assert(savedConfig.lastTorrent === torrentFilePath)
