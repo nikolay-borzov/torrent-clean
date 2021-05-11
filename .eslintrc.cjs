@@ -74,6 +74,11 @@ module.exports = {
     /* eslint-plugin-prettier */
 
     'prettier/prettier': 'warn',
+
+    /* eslint-plugin-node */
+
+    // Disabled until https://github.com/mysticatea/eslint-plugin-node/issues/275 is fixed
+    'node/no-missing-import': 'off',
   },
   overrides: [
     // Test files

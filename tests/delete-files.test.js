@@ -1,7 +1,7 @@
 import test from 'ava'
 import { createTempDirectory } from 'create-temp-directory'
-import fs from 'fs'
-import path from 'path'
+import fs from 'node:fs'
+import path from 'node:path'
 
 import { deleteFilesAndEmptyDirectories } from '../lib/delete-files.js'
 import { createFiles } from './utils.js'

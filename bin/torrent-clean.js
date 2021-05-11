@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
-import os from 'os'
-import path from 'path'
+import os from 'node:os'
+import path from 'node:path'
 import enquirer from 'enquirer'
 import chalk from 'chalk'
-import { readFileSync } from 'fs'
+import { readFileSync } from 'node:fs'
 import minimist from 'minimist'
 
 import { cleanTorrentDirectory } from '../lib/api.js'

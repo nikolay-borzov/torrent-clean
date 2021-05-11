@@ -1,8 +1,8 @@
 import test from 'ava'
-import fs from 'fs'
-import path from 'path'
+import fs from 'node:fs'
+import path from 'node:path'
 import { createTempDirectory } from 'create-temp-directory'
-import { promisify } from 'util'
+import { promisify } from 'node:util'
 import YAML from 'yaml'
 import createTorrentCallback from 'create-torrent'
 
@@ -123,12 +123,8 @@ async function createTestContext(temporaryDirectoryPath) {
 test('cleanTorrentDirectory » should clean directory from extra files', async (t) => {
   const { tempDir } = t.context
 
-  const {
-    torrentId,
-    directoryPath,
-    expectDeleted,
-    expectKept,
-  } = await createTestContext(tempDir.path)
+  const { torrentId, directoryPath, expectDeleted, expectKept } =
+    await createTestContext(tempDir.path)
 
   await cleanTorrentDirectory({
     torrentId,
@@ -163,12 +159,8 @@ test('cleanTorrentDirectory » should ignore filename path case', async (t) => {
 test('cleanTorrentDirectory » should postpone files deleting if `dryRun` is set to `true`', async (t) => {
   const { tempDir } = t.context
 
-  const {
-    torrentId,
-    directoryPath,
-    expectDeleted,
-    expectKept,
-  } = await createTestContext(tempDir.path)
+  const { torrentId, directoryPath, expectDeleted, expectKept } =
+    await createTestContext(tempDir.path)
 
   const { extraFiles, deleteFiles } = await cleanTorrentDirectory({
     torrentId,
@@ -199,12 +191,8 @@ test('cleanTorrentDirectory » should postpone files deleting if `dryRun` is set
 test('cleanTorrentDirectory » should get `torrentId` from `lastTorrent` config property if `rememberLastTorrent` is set to `true`', async (t) => {
   const { tempDir } = t.context
 
-  const {
-    torrentId,
-    directoryPath,
-    expectDeleted,
-    expectKept,
-  } = await createTestContext(tempDir.path)
+  const { torrentId, directoryPath, expectDeleted, expectKept } =
+    await createTestContext(tempDir.path)
 
   const torrentFilePath = path.join(
     tempDir.path,

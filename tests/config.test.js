@@ -1,7 +1,7 @@
 import test from 'ava'
 import { createTempDirectory } from 'create-temp-directory'
-import path from 'path'
-import fs from 'fs'
+import path from 'node:path'
+import fs from 'node:fs'
 import YAML from 'yaml'
 
 import { loadConfig, saveConfig } from '../lib/config.js'
