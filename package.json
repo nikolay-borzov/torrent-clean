@@ -78,7 +78,7 @@
     }
   },
   "dependencies": {
-    "chalk": "^4.1.0",
+    "chalk": "^4.1.1",
     "cosmiconfig": "^7.0.0",
     "delete-empty": "^3.0.0",
     "enquirer": "^2.3.6",
@@ -86,31 +86,31 @@
     "minimist": "^1.2.5",
     "picomatch": "^2.2.3",
     "readdirp": "^3.6.0",
-    "webtorrent": "^0.117.0",
+    "webtorrent": "^0.118.0",
     "yaml": "^1.10.2"
   },
   "devDependencies": {
     "@commitlint/cli": "^12.1.1",
     "@commitlint/config-conventional": "^12.1.1",
     "ava": "^3.15.0",
-    "c8": "^7.7.1",
+    "c8": "^7.7.2",
     "create-temp-directory": "^1.1.1",
     "create-torrent": "^4.7.0",
-    "eslint": "^7.24.0",
-    "eslint-config-prettier": "^8.2.0",
+    "eslint": "^7.26.0",
+    "eslint-config-prettier": "^8.3.0",
     "eslint-config-prettier-standard": "^4.0.1",
     "eslint-config-standard": "^16.0.2",
     "eslint-plugin-ava": "^12.0.0",
     "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-jsdoc": "^32.3.0",
+    "eslint-plugin-jsdoc": "^34.0.1",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^3.4.0",
     "eslint-plugin-promise": "^5.1.0",
-    "eslint-plugin-unicorn": "^30.0.0",
+    "eslint-plugin-unicorn": "^32.0.1",
     "husky": "^4.3.8",
-    "lint-staged": "^10.5.4",
+    "lint-staged": "^11.0.0",
     "open-cli": "^6.0.1",
-    "prettier": "^2.2.1",
+    "prettier": "^2.3.0",
     "prettier-config-standard": "^4.0.0"
   }
 }
