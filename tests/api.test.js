@@ -1,12 +1,14 @@
-import test from 'ava'
 import fs from 'node:fs'
 import path from 'node:path'
-import { createTempDirectory } from 'create-temp-directory'
 import { promisify } from 'node:util'
-import YAML from 'yaml'
+
+import test from 'ava'
+import { createTempDirectory } from 'create-temp-directory'
 import createTorrentCallback from 'create-torrent'
+import YAML from 'yaml'
 
 import cleanTorrentDirectory from '../lib/api.js'
+
 import { createFiles } from './utils.js'
 
 const createTorrent = promisify(createTorrentCallback)
@@ -107,7 +109,7 @@ async function createTestContext(temporaryDirectoryPath) {
 
   return {
     torrentId,
-    directoryPath: directoryPath,
+    directoryPath,
     expectDeleted: ['set2/image2 (Copy).jpg'].map((filename) =>
       path.join(directoryPath, filename)
     ),

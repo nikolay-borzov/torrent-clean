@@ -1,16 +1,24 @@
 module.exports = {
   root: true,
+
   ignorePatterns: [
     '**/*.*',
     '!**/*.js',
     '!**/*.cjs',
     'node_modules',
-    '/dist',
-    '/coverage',
+    'dist',
+    'coverage',
   ],
+
+  parserOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+  },
+
   env: {
     node: true,
   },
+
   extends: [
     'eslint:recommended',
     'plugin:jsdoc/recommended',
@@ -18,15 +26,13 @@ module.exports = {
     'plugin:node/recommended',
     'prettier-standard/prettier-file',
   ],
-  parserOptions: {
-    ecmaVersion: 12,
-    sourceType: 'module',
-  },
+
   settings: {
     jsdoc: {
       mode: 'typescript',
     },
   },
+
   // Keep rules grouped by plugin and sorted alphabetically
   rules: {
     'padding-line-between-statements': [
@@ -70,6 +76,25 @@ module.exports = {
     'import/extensions': ['error', 'always', { ignorePackages: true }],
     // Force using only named exports
     'import/no-default-export': 'error',
+    // Sort imports
+    'import/order': [
+      'error',
+      {
+        groups: [
+          'builtin',
+          'external',
+          'internal',
+          'parent',
+          'sibling',
+          'type',
+        ],
+        'newlines-between': 'always',
+        alphabetize: {
+          order: 'asc',
+          caseInsensitive: false,
+        },
+      },
+    ],
 
     /* eslint-plugin-prettier */
 
@@ -77,7 +102,7 @@ module.exports = {
 
     /* eslint-plugin-node */
 
-    // Disabled until https://github.com/mysticatea/eslint-plugin-node/issues/275 is fixed
+    // FIXME: Disabled until https://github.com/avajs/ava/discussions/2866 is resolved
     'node/no-missing-import': 'off',
   },
   overrides: [

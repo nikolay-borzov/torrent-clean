@@ -1,10 +1,12 @@
+import fs from 'node:fs'
+import path from 'node:path'
+
 import test from 'ava'
 import { createTempDirectory } from 'create-temp-directory'
-import path from 'node:path'
-import fs from 'node:fs'
 import YAML from 'yaml'
 
 import { loadConfig, saveConfig } from '../lib/config.js'
+
 import { createFiles } from './utils.js'
 
 /**
@@ -170,7 +172,7 @@ function saveConfigUpdateFileMacro(t, { filename, getFileContent }) {
 
   saveConfig({
     config,
-    saveDirectoryPath: saveDirectoryPath,
+    saveDirectoryPath,
     existingConfigPath,
   })
 

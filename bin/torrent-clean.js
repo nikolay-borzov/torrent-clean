@@ -1,15 +1,16 @@
-#!/usr/bin/env node
+#!/usr/bin/env node --no-warnings
 
+import { readFileSync } from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
-import enquirer from 'enquirer'
+
 import chalk from 'chalk'
-import { readFileSync } from 'node:fs'
+import enquirer from 'enquirer'
 import minimist from 'minimist'
 
 import { cleanTorrentDirectory } from '../lib/api.js'
-import * as logColor from '../lib/log-color.js'
 import { FilesSelect } from '../lib/file-select-prompt.js'
+import * as logColor from '../lib/log-color.js'
 
 const { Confirm } = enquirer
 
@@ -21,15 +22,30 @@ const argv = minimist(process.argv.slice(2), {
 })
 
 if (argv.version) {
-  const packageJsonPath = new URL('../package.json', import.meta.url).toString()
+  const packageJsonPath = new URL('../package.json', import.meta.url)
   const packageJson = JSON.parse(readFileSync(packageJsonPath).toString())
 
   console.log(packageJson.version)
 } else {
+  try {
+    await run(argv)
+  } catch (error) {
+    console.log(logColor.error(error.stack))
+
+    process.exitCode = 1
+  }
+}
+
+/**
+ * Runs CLI logic.
+ *
+ * @param {minimist.ParsedArgs} argv
+ */
+async function run(argv) {
   const torrentId = argv.torrent
   const directoryPath = path.resolve(argv.dir)
 
-  cleanTorrentDirectory({
+  const { torrentName, extraFiles, deleteFiles } = await cleanTorrentDirectory({
     torrentId,
     directoryPath,
     dryRun: true,
@@ -40,71 +56,63 @@ if (argv.version) {
       console.log(logColor.info('Parsing torrent file...'), os.EOL)
     },
   })
-    .then(async ({ torrentName, extraFiles, deleteFiles }) => {
-      console.log(`Parsed ${chalk.bold(torrentName)}`)
 
-      if (extraFiles.length === 0) {
-        console.log('No extra files found!')
+  console.log(`Parsed ${chalk.bold(torrentName)}`)
 
-        return
-      }
+  if (extraFiles.length === 0) {
+    console.log('No extra files found!')
 
-      console.log(
-        `Found ${chalk.bold(extraFiles.length)} extra file(s).`,
-        os.EOL
-      )
+    return
+  }
 
-      const directoryRoot = `${directoryPath}${path.sep}`
+  console.log(`Found ${chalk.bold(extraFiles.length)} extra file(s).`, os.EOL)
 
-      const filesChoices = extraFiles.map((filename) => ({
-        name: filename.replace(directoryRoot, ''),
-        value: filename,
-      }))
+  const directoryRoot = `${directoryPath}${path.sep}`
 
-      const filesToDeleteMultiSelect = new FilesSelect({
-        name: 'selectFilesToDelete',
-        message: `Select file(s) to delete ('space' - toggle item selection, 'i' - invert selection)`,
-        choices: filesChoices,
-        limit: FILES_ON_SCREEN_LIMIT,
-        indicator: '■',
-        initial() {
-          // TODO: Remove after https://github.com/enquirer/enquirer/issues/201 is fixed
-          this.options.initial = filesChoices
+  const filesChoices = extraFiles.map((filename) => ({
+    name: filename.replace(directoryRoot, ''),
+    value: filename,
+  }))
 
-          return filesChoices
-        },
-        // Get values from selected names https://github.com/enquirer/enquirer/issues/121
-        result(names) {
-          return names.map((name) => this.find(name).value)
-        },
-      })
+  const filesToDeleteMultiSelect = new FilesSelect({
+    name: 'selectFilesToDelete',
+    message: `Select file(s) to delete ('space' - toggle item selection, 'i' - invert selection)`,
+    choices: filesChoices,
+    limit: FILES_ON_SCREEN_LIMIT,
+    indicator: '■',
+    initial() {
+      // TODO: Remove after https://github.com/enquirer/enquirer/issues/201 is fixed
+      this.options.initial = filesChoices
 
-      const filesToDelete = await filesToDeleteMultiSelect.run()
+      return filesChoices
+    },
+    // Get values from selected names https://github.com/enquirer/enquirer/issues/121
+    /** @param {string[]} names */
+    result(names) {
+      return names.map((name) => this.find(name).value)
+    },
+  })
 
-      if (filesToDelete.length === 0) {
-        return
-      }
+  const filesToDelete = await filesToDeleteMultiSelect.run()
 
-      const deleteConfirm = new Confirm({
-        name: 'delete',
-        message: 'Delete extra files?',
-        initial: true,
-      })
+  if (filesToDelete.length === 0) {
+    return
+  }
 
-      const deleteFilesAnswer = await deleteConfirm.run()
+  const deleteConfirm = new Confirm({
+    name: 'delete',
+    message: 'Delete extra files?',
+    initial: true,
+  })
 
-      if (deleteFilesAnswer) {
-        console.log()
-        console.log(logColor.info('Deleting extra files...'))
+  const deleteFilesAnswer = await deleteConfirm.run()
 
-        await deleteFiles(filesToDelete)
+  if (deleteFilesAnswer) {
+    console.log()
+    console.log(logColor.info('Deleting extra files...'))
 
-        console.log('Files deleted.')
-      }
-    })
-    .catch((error) => {
-      console.log(logColor.error(error.stack))
+    await deleteFiles(filesToDelete)
 
-      process.exitCode = 1
-    })
+    console.log('Files deleted.')
+  }
 }

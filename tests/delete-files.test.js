@@ -1,9 +1,11 @@
-import test from 'ava'
-import { createTempDirectory } from 'create-temp-directory'
 import fs from 'node:fs'
 import path from 'node:path'
 
+import test from 'ava'
+import { createTempDirectory } from 'create-temp-directory'
+
 import { deleteFilesAndEmptyDirectories } from '../lib/delete-files.js'
+
 import { createFiles } from './utils.js'
 
 test.beforeEach('Create temp directory', async (t) => {
