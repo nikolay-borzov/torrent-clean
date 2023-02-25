@@ -17,12 +17,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### BREAKING CHANGES
 -->
 
-## [v3.0.0](https://github.com/nikolay-borzov/torrent-clean/compare/v2.0.0...v3.0.0) - 2023-02-22
+## [3.0.0](https://github.com/nikolay-borzov/torrent-clean/compare/v2.0.0...v3.0.0) - 2023-02-22
 
 ### Added
 
-- CHANGELOG.md according to [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
-- Russian README. Follow https://github.com/jonatasemidio/multilanguage-readme-pattern
+- `CHANGELOG.md` according to [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
+- Russian `README`. Follow https://github.com/jonatasemidio/multilanguage-readme-pattern
 - `--no-warnings` to the `bin` script to suppress "ExperimentalWarning: Importing JSON modules is an experimental feature and might change at any time" warning (caused by [`webtorrent` code](https://github.com/webtorrent/webtorrent/blob/ffacc37a9b5993e41ff003c6a2bb2bef734576ac/index.js#L21))
 
 ### Changed
@@ -38,7 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Require node version 18 and higher
 
-## [v2.0.0](https://github.com/nikolay-borzov/torrent-clean/compare/v1.7.2...v2.0.0) - 2021-04-20
+## [2.0.0](https://github.com/nikolay-borzov/torrent-clean/compare/v1.7.2...v2.0.0) - 2021-04-20
 
 ### Changed
 
@@ -52,19 +52,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Rename main function to `cleanTorrentDirectory`
 - Rename `dirPath` parameter to `directoryPath`
 
-## [v1.7.2](https://github.com/nikolay-borzov/torrent-clean/compare/v1.7.1...v1.7.2) - 2020-10-03
+## [1.7.2](https://github.com/nikolay-borzov/torrent-clean/compare/v1.7.1...v1.7.2) - 2020-10-03
 
 ### Fixed
 
 - Ignore filename path case when comparing files in torrent with files on the file system
 
-## [v1.7.1](https://github.com/nikolay-borzov/torrent-clean/compare/v1.7.0...v1.7.1) - 2020-04-24
+## [1.7.1](https://github.com/nikolay-borzov/torrent-clean/compare/v1.7.0...v1.7.1) - 2020-04-24
 
 ### Fixed
 
 - Fix infinite loop when a config file is at the root
 
-## [v1.7.0](https://github.com/nikolay-borzov/torrent-clean/compare/v1.6.0...v1.7.0) - 2020-04-20
+## [1.7.0](https://github.com/nikolay-borzov/torrent-clean/compare/v1.6.0...v1.7.0) - 2020-04-20
 
 ### Added
 
@@ -76,7 +76,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Make `--torrent` and `torrentId` optional. Throw error when `torrentId` cannot be received from `lastTorrent` property
 - Return "Parsed TORRENT_NAME" CLI output
 
-## [v1.6.0](https://github.com/nikolay-borzov/torrent-clean/compare/v1.5.0...v1.6.0) - 2020-04-12
+## [1.6.0](https://github.com/nikolay-borzov/torrent-clean/compare/v1.5.0...v1.6.0) - 2020-04-12
 
 ### Added
 
@@ -88,25 +88,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Replace `recursive-readdir` with `readdirp`
 
-## [v1.5.0](https://github.com/nikolay-borzov/torrent-clean/compare/v1.4.2...v1.5.0) - 2020-03-29
+## [1.5.0](https://github.com/nikolay-borzov/torrent-clean/compare/v1.4.2...v1.5.0) - 2020-03-29
 
 ### Added
 
 - Display file number near filename
 
-## [v1.4.2](https://github.com/nikolay-borzov/torrent-clean/compare/v1.4.1...v1.4.2) - 2020-03-14
+## [1.4.2](https://github.com/nikolay-borzov/torrent-clean/compare/v1.4.1...v1.4.2) - 2020-03-14
 
 ### Changed
 
 - Update dependencies
 
-## [v1.4.1](https://github.com/nikolay-borzov/torrent-clean/compare/v1.4.0...v1.4.1) - 2019-10-04
+## [1.4.1](https://github.com/nikolay-borzov/torrent-clean/compare/v1.4.0...v1.4.1) - 2019-10-04
 
 ### Fixed
 
 - Fix config loader for the case when `ignore` isn't set
 
-## [v1.4.0](https://github.com/nikolay-borzov/torrent-clean/compare/v1.3.0...v1.4.0) - 2019-09-16
+## [1.4.0](https://github.com/nikolay-borzov/torrent-clean/compare/v1.3.0...v1.4.0) - 2019-09-16
 
 ### Added
 
@@ -119,19 +119,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Limit extra files display count to 20. You can scroll down using arrows
 - Change file select indicator to `■`
 
-## [v1.3.0](https://github.com/nikolay-borzov/torrent-clean/compare/v1.2.0...v1.3.0) - 2019-09-01
+## [1.3.0](https://github.com/nikolay-borzov/torrent-clean/compare/v1.2.0...v1.3.0) - 2019-09-01
 
 ### Added
 
 - Allow selecting files to delete
 
-## [v1.2.0](https://github.com/nikolay-borzov/torrent-clean/compare/v1.1.0...v1.2.0) - 2019-01-09
+## [1.2.0](https://github.com/nikolay-borzov/torrent-clean/compare/v1.1.0...v1.2.0) - 2019-01-09
 
 ### Added
 
 - Add magnet URI and info hash support
 
-## [v1.1.0](https://github.com/nikolay-borzov/torrent-clean/compare/v.1.0.0...v1.1.0) -
+## [1.1.0](https://github.com/nikolay-borzov/torrent-clean/compare/v.1.0.0...v1.1.0) -
 
 ### Added
 
@@ -140,7 +140,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add colors using `chalk`
 - Implement errors catching
 
-## v1.0.0 - 2019-01-07
+## 1.0.0 - 2019-01-07
 
 ### Added
 

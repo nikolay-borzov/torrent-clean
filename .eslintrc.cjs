@@ -23,7 +23,7 @@ module.exports = {
     'eslint:recommended',
     'plugin:jsdoc/recommended',
     'plugin:unicorn/recommended',
-    'plugin:node/recommended',
+    'plugin:n/recommended',
     'prettier-standard/prettier-file',
   ],
 
@@ -104,6 +104,10 @@ module.exports = {
 
     // FIXME: Disabled until https://github.com/avajs/ava/discussions/2866 is resolved
     'node/no-missing-import': 'off',
+
+    /* eslint-plugin-n (node) */
+
+    'n/no-unsupported-features/es-syntax': ['error'],
   },
   overrides: [
     // Test files
